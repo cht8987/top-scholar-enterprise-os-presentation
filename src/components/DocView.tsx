@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BookOpen, Layers, ArrowLeft, ShieldCheck, Cpu } from 'lucide-react';
 import { DEPARTMENTS, ROADMAP_PHASES } from '../data/presentationData';
 import { VaultTreeViewer } from './VaultTreeViewer';
+import { AiMemoryDeepDive } from './AiMemoryDeepDive';
 
 interface DocViewProps {
   onSwitchToSlides: () => void;
@@ -26,7 +27,7 @@ export const DocView: React.FC<DocViewProps> = ({ onSwitchToSlides }) => {
             Top Scholar 企业智脑策略全景文档库
           </h1>
           <p className="text-xs md:text-sm text-gray-400 mt-1">
-            重构通俗版：完全移除晦涩技术黑话，保留 100% 商业价值与完整 2.2 Vault 目录树
+            包含静态真相蓝图、AI Memory (FalkorDB / Graphiti / Hindsight) 深度解构与分阶段路线图
           </p>
         </div>
 
@@ -42,7 +43,7 @@ export const DocView: React.FC<DocViewProps> = ({ onSwitchToSlides }) => {
               }`}
             >
               <BookOpen className="w-4 h-4" />
-              <span>静态知识中枢蓝图</span>
+              <span>知识蓝图 & AI Memory</span>
             </button>
             <button
               onClick={() => setActiveTab('deployment')}
@@ -121,8 +122,19 @@ export const DocView: React.FC<DocViewProps> = ({ onSwitchToSlides }) => {
             </div>
           </div>
 
-          {/* Section 2.2: Full Vault Tree */}
+          {/* Section 3: AI Memory Deep Dive */}
           <div className="space-y-4 pt-4 border-t border-gray-800">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2 border-l-4 border-emerald-500 pl-3">
+              三、 AI Memory 动态神经网深度解构 (FalkorDB / Graphiti / Hindsight)
+            </h3>
+            <AiMemoryDeepDive />
+          </div>
+
+          {/* Section 4: Full Vault Tree */}
+          <div className="space-y-4 pt-4 border-t border-gray-800">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2 border-l-4 border-amber-500 pl-3">
+              四、 2.2 Vault 目录结构定义 (一字不删完整版)
+            </h3>
             <VaultTreeViewer />
           </div>
         </div>
