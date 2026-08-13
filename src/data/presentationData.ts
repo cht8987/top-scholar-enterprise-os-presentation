@@ -50,6 +50,53 @@ export interface AiMemoryComponentInfo {
   keyFeatures: string[];
 }
 
+export const COMPANY_OS_TWIN_PILLAR_TREE = `                    COMPANY OS (TS 企业操作系统)
+                        │
+            ┌───────────┴───────────┐
+            │                       │
+       OBSIDIAN VAULT           BUSINESS DB (LMS 系统统一入口)
+            │                       │
+     【Knowledge Layer】      【Business Data Layer】
+       SOP / Playbook          Student Data (学员数据)
+       Policies (公司政策)     Subscription (课程订阅)
+       Experience (经验)       Attendance (出勤记录)
+       Training (培训)         Scores (成绩表现)
+       Decisions (决策)        Payment (缴费记录)
+       Prices (唯一价格)       Classes (班级分组)
+            │                  Customer Data (家长画像)
+            │                  ★ Coach / Teacher / Student 绑定管理
+            │                       │
+            └───────────┬───────────┘
+                        │
+                     AI 智脑层
+          (FalkorDB + Graphiti + Hindsight)
+                        │
+                        ▼
+     【全员 AI 岗位分身】 营销 / 销售 / 客服 / 教务 / IT / 高管`;
+
+export const BUSINESS_DB_HIGHLIGHTS = [
+  {
+    title: 'LMS 系统的核心入口与数据库心脏',
+    description: '所有的教练 (Coach)、老师 (Teacher) 与学生 (Student) 的全流程业务数据，全部下沉绑定在 Business DB 中统一管理。',
+    icon: 'Database'
+  },
+  {
+    title: '全方位学员生命周期资产 (Student Data)',
+    description: '管理学员档案、家长信息 (Customer Data)、课程订阅 (Subscription)、班级分组 (Classes) 与历史学费记录 (Payment)。',
+    icon: 'Users'
+  },
+  {
+    title: '学情与表现实效追踪 (Attendance & Scores)',
+    description: '记录学生在 LMS 中的打卡出勤 (Attendance)、作业成绩与测评表现 (Scores)，为 AI 红黄绿灯判定提供真实数据源。',
+    icon: 'TrendingUp'
+  },
+  {
+    title: 'AI 智脑双源驱动闭环',
+    description: 'Obsidian Vault 解决“怎么做与规则是什么”，Business DB 解决“谁在学、进度如何与费用结清”。AI 助手双向联查，生成零失误答复。',
+    icon: 'Cpu'
+  }
+];
+
 export const AI_MEMORY_TRIO: AiMemoryComponentInfo[] = [
   {
     name: 'FalkorDB 图底座',
@@ -59,14 +106,14 @@ export const AI_MEMORY_TRIO: AiMemoryComponentInfo[] = [
     color: 'from-blue-600 to-indigo-700',
     icon: 'Database',
     role: '高性能图数据库底座，负责毫秒级持久化存储节点与关系网络。',
-    techDetails: '基于 Redis 内核的高性能图数据库，支持 Cypher 结构化查询与 Vector 混合向量相似度检索。',
+    techDetails: '基于 Redis 内核的高性能图数据库，支持 Cypher 结构化查询与 Vector 混合向量相似度检索。存储 Coach/Teacher/Student 实体与 SOP 关系节点。',
     whyNeeded: '普通关系型 SQL 或单纯向量库无法高效表达复杂的“产品-价格-SOP-学员”多维网状关联，FalkorDB 提供了毫秒级的关联查询性能。',
     deployment: 'Docker Compose 容器部署 (独立 6379 端口，4GB 内存配额)。',
     keyFeatures: [
       'Redis 高速内核，查询延迟 < 5 毫秒',
       '原生支持 Cypher 标准图查询语言',
       '图结构 + 向量 Embedding 混合索引',
-      '实体节点：Product / SOP / Policy / Student'
+      '实体节点：Coach / Teacher / Student / SOP'
     ]
   },
   {
@@ -77,9 +124,9 @@ export const AI_MEMORY_TRIO: AiMemoryComponentInfo[] = [
     color: 'from-emerald-600 to-teal-700',
     icon: 'Clock',
     role: '时序图谱写入引擎，为所有知识与聊天事件自动打上时间戳 (Timestamp)。',
-    techDetails: '利用大语言模型 (LLM) 增量提取对话中的实体与时序演进关系，提供 insert() 与 search() 高级记忆 API。',
-    whyNeeded: '教育业务天然是时序演进的（学员“6个月前的成绩” vs “现在的进步” vs “未来的预警”）。Graphiti 让 AI 能够追踪时间线的历史版本变迁。',
-    deployment: 'Docker Compose 中间件，自动监听 Obsidian Git 变更与对话事件。',
+    techDetails: '利用大语言模型 (LLM) 增量提取对话与 LMS 考勤成绩事件中的时序演进关系，提供 insert() 与 search() 高级记忆 API。',
+    whyNeeded: '教育业务天然是时序演进的（学员“6个月前的成绩” vs “现在的表现” vs “未来的预警”）。Graphiti 让 AI 能够追踪时间线的历史版本变迁。',
+    deployment: 'Docker Compose 中间件，自动监听 Obsidian Git 变更与 LMS DB 交互事件。',
     keyFeatures: [
       '自动提取增量“实体-关系”事件',
       '节点赋予精确时间戳 (Temporal Nodes)',
@@ -147,9 +194,9 @@ export const DEPARTMENTS: DepartmentInfo[] = [
     icon: 'TrendingUp',
     owner: 'Sales Lead / Elson',
     color: 'from-amber-500 to-orange-600',
-    description: '家长 FAQ 常见问答库、6 大类关单异议破解与成交闭单 SOP。',
+    description: '家长 FAQ 常见问答库、6 大类关单异议破解与成交闭单 SOP。联动 LMS 客户订阅记录。',
     keyFiles: ['家长常见疑问FAQ-5类.md', '异议处理6类破解.md', 'Booking Call 6步走.md', '成交案例库.md'],
-    assistantRole: '实时对话中提示破解话术、生成专属报价单简报',
+    assistantRole: '结合 LMS DB 订阅状态，实时提示关单话术、生成专属报价单',
     benefits: ['降低新销售培养周期', '回答异议流畅准确', '显著提升闭单转化率']
   },
   {
@@ -158,9 +205,9 @@ export const DEPARTMENTS: DepartmentInfo[] = [
     icon: 'Users',
     owner: 'CS Lead / Elson',
     color: 'from-cyan-500 to-blue-600',
-    description: '学员报名后流程、学员表现红黄绿灯预警标准与续费升单 SOP。',
+    description: '学员报名后流程、LMS 学员表现红黄绿灯预警标准与续费升单 SOP。',
     keyFiles: ['报名后三步走SOP.md', '学员红黄绿灯判定标准.md', '续费与升单SOP.md', '家长关怀模板库.md'],
-    assistantRole: '自动分析学员学习动态、判定红黄绿灯、拟定家长关怀草稿',
+    assistantRole: '自动分析 LMS DB 中的考勤成绩，判定红黄绿灯、拟定家长关怀草稿',
     benefits: ['流失风险提前预警', '家长关怀效率翻倍', '学员续费率稳步上升']
   },
   {
@@ -169,9 +216,9 @@ export const DEPARTMENTS: DepartmentInfo[] = [
     icon: 'GraduationCap',
     owner: 'Academic Lead',
     color: 'from-violet-500 to-purple-600',
-    description: 'SEE 教学理念、A+ 五环系统、作业批改标准与教材库索取。',
+    description: 'SEE 教学理念、A+ 五环系统、Coach/Teacher 管理、作业批改标准与教材库。',
     keyFiles: ['作业批改标准.md', 'SEE 教学理念与A+五环.md', '课表与分组规则.md', '教材与Workbook索引.md'],
-    assistantRole: '推荐个性化批改评语、快速检索讲义与配套练习',
+    assistantRole: '联动 LMS 中的 Coach/Teacher 教学记录，推荐个性化评语与课件',
     benefits: ['教学批改标准统一', '教材检索零秒等待', '提升学员学习体验']
   },
   {
@@ -180,9 +227,9 @@ export const DEPARTMENTS: DepartmentInfo[] = [
     icon: 'Server',
     owner: 'Elson (IT Lead)',
     color: 'from-slate-500 to-zinc-600',
-    description: '系统账号管理、Zoom 链接自动分发规则与故障排除应急手册。',
+    description: '系统账号管理、Business DB (LMS 入口) 运维、Zoom 链接自动分发与故障排除。',
     keyFiles: ['系统清单与权限申请.md', 'Zoom链接发放规则.md', '故障排查手册.md', '系统运维Runbook.md'],
-    assistantRole: '引导员工自助解决软件故障、协助自动排班与发号',
+    assistantRole: '引导员工自助解决软件故障、协助 Business DB 数据交互',
     benefits: ['减少 80%IT 重复报修', '系统发号零延误', '故障快速应急恢复']
   }
 ];
@@ -198,11 +245,11 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     assistants: ['营销 AI 助手', '运营与 IT AI 助手'],
     keyGoals: [
       '完成 Obsidian Vault 架构搭建与 5 份核心 SOP 迁移',
+      '映射 Business DB (LMS 入口) Coach/Teacher/Student 字段',
       '部署 FalkorDB 容器与基础图节点索引',
-      '复用 Hindsight 私有实例连接经验 Bank',
       '全员通过 Obsidian Sync 隐形一键协同'
     ],
-    highlight: '极简起步，完成 FalkorDB 底座部署与 2 个核心助手上线。'
+    highlight: '双柱启动：构建 Obsidian 知识层 + Business DB (LMS 系统入口) 映射。'
   },
   {
     phase: 'Phase 2',
@@ -213,12 +260,12 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     budget: 'RM 300 - 600 / 月',
     assistants: ['销售 AI 助手', '客户成功 (CS) AI 助手'],
     keyGoals: [
-      '引入 Graphiti 时序记忆引擎，赋予记忆时间戳追踪',
-      '接入销售 AI 助手，报价准确率达 99%',
-      '上线客服助手红黄绿灯学员风险预警',
-      '形成 2 周一次的复盘优化闭环'
+      '打通 LMS DB 的考勤成绩数据，上线红黄绿灯学员预警',
+      '引入 Graphiti 时序记忆引擎，赋予数据时间戳',
+      '销售 AI 助手联动 LMS 订阅记录输出续费简报',
+      '每个部门沉淀 50+ 篇核心资产文档'
     ],
-    highlight: '引入 Graphiti 时空记忆演进，销售与客服效率翻倍。'
+    highlight: '打通 Business DB (LMS 系统) 业务流，销售与客服效率翻倍。'
   },
   {
     phase: 'Phase 3',
@@ -229,12 +276,12 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     budget: 'RM 3,300 - 5,000 / 月',
     assistants: ['6 大部门 AI 助手全线上线', '高管 Executive Dashboard AI'],
     keyGoals: [
-      'Hindsight 长期记忆库全量质检与打分机制',
-      '高管仪表盘上线，实时呈现全局 ROI 与风险预警',
-      '跨部门数据无缝实时流转',
-      '统一 student_id 学员全生命周期贯穿'
+      '统一 student_id 全链路贯穿 LMS DB 与 AI 看板',
+      '教务 AI 助手上线，辅助 Coach/Teacher 批改评语',
+      '高管仪表盘上线，实时呈现大盘 ROI 与续费趋势',
+      '跨部门数据无缝实时流转'
     ],
-    highlight: 'FalkorDB + Graphiti + Hindsight 全量协同，高管掌握全局。'
+    highlight: '以 student_id 贯穿全大盘，全员 AI 深度协同。'
   },
   {
     phase: 'Phase 4',
@@ -245,7 +292,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     budget: 'RM 8,000 - 15,000 / 月',
     assistants: ['AI 预测与决策引擎', '全流程智能辅助阵列'],
     keyGoals: [
-      '流失预警提前 30 天自动化提醒',
+      '结合 LMS 考勤数据提前 30 天自动化提醒学员退费风险',
       '智能预测下季度招生与续费量',
       '人类监督 + AI 智能建议闭环',
       '成为行业领先的 AI 原生教育企业'
@@ -256,28 +303,28 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
 
 export const FAQS: FaqItem[] = [
   {
+    question: '什么是 Business DB？它和 LMS 系统是什么关系？',
+    answer: 'Business DB 是 Top Scholar LMS (学习管理系统) 的统一数据库心脏与唯一入口！所有的教练 (Coach)、老师 (Teacher) 和学生 (Student) 的全流程业务数据（出勤 Attendance、成绩 Scores、订阅 Subscription、班级 Classes、缴费 Payment）全部绑定在 Business DB 中统一管理。',
+    tag: 'Business DB / LMS'
+  },
+  {
+    question: 'Company OS 的“双柱架构”是如何运作的？',
+    answer: 'Company OS 由【柱1：Obsidian Vault】与【柱2：Business DB】双柱驱动。Obsidian 负责存 SOP、价格表和政策（回答“怎么做”）；Business DB 负责存 LMS 中的 Coach/Teacher/Student 真实考勤与成绩（回答“谁在学、进度如何”）。两者汇聚到 AI 大脑，实现全流程智能解答与预警。',
+    tag: '双柱架构'
+  },
+  {
     question: '为什么 AI Memory 必须由 FalkorDB、Graphiti 和 Hindsight 三者组合？',
     answer: '三者在不同层级各司其职：FalkorDB 是基础图数据库底座（负责存取节点与极速查询）；Graphiti 是中间件（用大模型提取实体并为记忆赋予时间戳，解决知识过时问题）；Hindsight 是高阶质检与复盘（记录成功经验与人工纠错，确保错误不重犯）。三者缺一不可。',
     tag: 'AI Memory 技术'
   },
   {
-    question: '非技术员工（如销售、客服）使用这套系统会不会觉得太难？',
-    answer: '完全不会！我们选择了开箱即用的 Obsidian Sync 方案，界面就像普通的手机记事本或 Telegram 聊天窗口。员工只需像平日打字一样输入内容或问 AI 问题，10 分钟即可上手。',
-    tag: '团队使用'
-  },
-  {
-    question: '数据保存在哪里？公司的核心价格和客户资料会泄露吗？',
-    answer: '绝对安全！我们坚守「数据主权在公司手心里」原则。FalkorDB 与 Graphiti 全部运行在公司私有服务器，数据经过加密，绝对不会被第三方平台拿去训练公开大模型。',
+    question: '数据保存在哪里？公司的核心价格和 LMS 客户资料会泄露吗？',
+    answer: '绝对安全！我们坚守「数据主权在公司手心里」原则。Obsidian Vault、Business DB (LMS DB) 与 FalkorDB 全部运行在公司私有服务器，数据经过加密，绝对不会被第三方平台拿去训练公开大模型。',
     tag: '数据安全'
   },
   {
-    question: 'AI 会不会盲目胡说八道（产生 AI 幻觉），把错误的价格发给家长？',
-    answer: '我们建立了「静态真相库 + 3 层防幻觉校验机制」。AI 在回答价格或制度时，必须强制匹配静态库中的【唯一权威价格表】。同时所有给家长的外部消息，都必须经过人类员工最终确认。',
-    tag: '质量把关'
-  },
-  {
     question: '如果未来老员工离职，这套系统能起到什么效果？',
-    answer: '这正是本系统的核心价值！所有 SOP、经验话术、工作笔记均已被 Hindsight 和 FalkorDB 提取并永久保留在「企业数字大脑」中。新员工入职后，AI 助手能带他快速检索所有历史经验，1 周内无缝上手。',
+    answer: '这正是本系统的核心价值！所有 SOP、经验话术、以及 LMS 中的学员历史表现均已被 AI 大脑提取并永久保留在「企业数字大脑」中。新员工入职后，AI 助手能带他快速检索所有历史经验，1 周内无缝上手。',
     tag: '资产沉淀'
   }
 ];

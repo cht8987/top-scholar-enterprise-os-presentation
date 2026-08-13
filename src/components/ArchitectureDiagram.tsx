@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
-import { Database, Brain, Sparkles, UserCheck, ShieldCheck, ArrowDown, Cpu, Clock, Layers } from 'lucide-react';
+import { Database, Brain, Sparkles, UserCheck, ShieldCheck, ArrowDown, Cpu, Clock, Layers, Users, TrendingUp, BookOpen } from 'lucide-react';
 import { AiMemoryDeepDive } from './AiMemoryDeepDive';
+import { COMPANY_OS_TWIN_PILLAR_TREE, BUSINESS_DB_HIGHLIGHTS } from '../data/presentationData';
 
 export const ArchitectureDiagram: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'all' | 'static' | 'dynamic' | 'deepdive'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'twin_pillars' | 'deepdive' | 'ascii'>('twin_pillars');
+
+  const getHighlightIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Database': return <Database className="w-5 h-5 text-blue-400" />;
+      case 'Users': return <Users className="w-5 h-5 text-emerald-400" />;
+      case 'TrendingUp': return <TrendingUp className="w-5 h-5 text-purple-400" />;
+      default: return <Cpu className="w-5 h-5 text-amber-400" />;
+    }
+  };
 
   return (
     <div className="glass-panel rounded-2xl p-6 md:p-8 border border-purple-500/20 shadow-2xl relative overflow-hidden space-y-6">
@@ -11,38 +21,30 @@ export const ArchitectureDiagram: React.FC = () => {
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-gray-800 pb-4">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
-            Top Scholar 企业智脑「双保险」架构
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-              通俗解构 + AI Memory 技术全解析
+            Top Scholar Company OS 双柱驱动架构
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+              知识层 + LMS 业务层双保险
             </span>
           </h3>
-          <p className="text-sm text-gray-400">人类权威保障底线，FalkorDB + Graphiti + Hindsight 赋能 AI 动态记忆演进</p>
+          <p className="text-sm text-gray-400">Obsidian Vault (SOP知识) + Business DB (LMS系统入口) 汇聚至 AI 智脑层</p>
         </div>
 
         <div className="flex flex-wrap gap-1 bg-gray-900/80 p-1 rounded-xl border border-gray-800">
+          <button
+            onClick={() => setActiveTab('twin_pillars')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              activeTab === 'twin_pillars' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
+            }`}
+          >
+            ★ 双柱架构图解 (Obsidian+LMS DB)
+          </button>
           <button
             onClick={() => setActiveTab('all')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'all' ? 'bg-purple-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
             }`}
           >
-            双层整体架构
-          </button>
-          <button
-            onClick={() => setActiveTab('static')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              activeTab === 'static' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            高亮：静态真相库
-          </button>
-          <button
-            onClick={() => setActiveTab('dynamic')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              activeTab === 'dynamic' ? 'bg-emerald-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            高亮：动态学习网
+            四层逻辑分流
           </button>
           <button
             onClick={() => setActiveTab('deepdive')}
@@ -50,15 +52,164 @@ export const ArchitectureDiagram: React.FC = () => {
               activeTab === 'deepdive' ? 'bg-amber-600 text-white shadow' : 'text-amber-400 hover:text-amber-200'
             }`}
           >
-            ★ AI Memory 技术深挖 (FalkorDB/Graphiti/Hindsight)
+            AI Memory 三剑客深挖
+          </button>
+          <button
+            onClick={() => setActiveTab('ascii')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all ${
+              activeTab === 'ascii' ? 'bg-emerald-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
+            }`}
+          >
+            ASCII 架构原图
           </button>
         </div>
       </div>
 
       {activeTab === 'deepdive' ? (
         <AiMemoryDeepDive />
+      ) : activeTab === 'ascii' ? (
+        <div className="glass-card rounded-2xl p-6 border border-blue-500/30 bg-slate-950/90 font-mono text-xs text-emerald-300 overflow-x-auto shadow-inner leading-relaxed">
+          <div className="text-xs text-gray-400 font-sans mb-3 flex items-center justify-between">
+            <span>Company OS 双柱驱动架构 ASCII 规范图：</span>
+            <span className="text-emerald-400 font-semibold">Obsidian Vault & Business DB (LMS Entry)</span>
+          </div>
+          <pre className="whitespace-pre">{COMPANY_OS_TWIN_PILLAR_TREE}</pre>
+        </div>
+      ) : activeTab === 'twin_pillars' ? (
+        /* TWIN PILLARS DIAGRAM */
+        <div className="space-y-6">
+          {/* Top Banner: Company OS */}
+          <div className="glass-card rounded-xl p-4 border border-blue-500/40 bg-gradient-to-r from-blue-950/40 via-purple-950/40 to-slate-900/40 text-center">
+            <h4 className="text-lg font-black text-white tracking-wide uppercase flex items-center justify-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-400" />
+              COMPANY OS (TS 企业操作系统核心)
+            </h4>
+            <p className="text-xs text-gray-300 mt-1">双柱驱动：知识沉淀与 LMS 业务数据全流程协同</p>
+          </div>
+
+          {/* Twin Pillars Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Pillar 1: Obsidian Vault */}
+            <div className="glass-card rounded-2xl p-6 border-blue-500/50 bg-blue-950/20 space-y-4 shadow-xl">
+              <div className="flex items-center justify-between border-b border-blue-500/20 pb-3">
+                <div className="flex items-center space-x-2">
+                  <div className="p-2.5 bg-blue-500/20 rounded-xl text-blue-400">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-blue-400 tracking-wider">Pillar 1 · 知识层</span>
+                    <h4 className="text-lg font-black text-white">OBSIDIAN VAULT</h4>
+                  </div>
+                </div>
+                <span className="text-[10px] px-2.5 py-1 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30 font-semibold">
+                  Knowledge Layer
+                </span>
+              </div>
+
+              <p className="text-xs text-gray-300 leading-relaxed">
+                公司的<strong>静态真相源 & SOP 规范大本营</strong>。由人类部门 Owner 维护，回答“怎么做、规则是什么、价格是多少”。
+              </p>
+
+              <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+                {[
+                  'SOP / Playbook',
+                  'Policies (公司政策)',
+                  'Experience (沉淀经验)',
+                  'Training (员工培训)',
+                  'Decisions (战略决策)',
+                  'Prices (★★ 唯一价格)'
+                ].map((item, idx) => (
+                  <div key={idx} className="p-2 bg-blue-900/30 rounded-lg border border-blue-500/20 text-blue-200">
+                    📄 {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Pillar 2: Business DB (LMS Entry) */}
+            <div className="glass-card rounded-2xl p-6 border-emerald-500/50 bg-emerald-950/20 space-y-4 shadow-xl">
+              <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
+                <div className="flex items-center space-x-2">
+                  <div className="p-2.5 bg-emerald-500/20 rounded-xl text-emerald-400">
+                    <Database className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Pillar 2 · 业务数据层</span>
+                    <h4 className="text-lg font-black text-white">BUSINESS DB (LMS 入口)</h4>
+                  </div>
+                </div>
+                <span className="text-[10px] px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
+                  ★ LMS System 入口
+                </span>
+              </div>
+
+              <p className="text-xs text-gray-300 leading-relaxed">
+                <strong>LMS 学习管理系统的数据库心脏与统一入口</strong>。所有的 Coach (教练)、Teacher (老师) 与 Student (学生) 均在此绑定管理。
+              </p>
+
+              <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+                {[
+                  'Student Data (学员数据)',
+                  'Subscription (课程订阅)',
+                  'Attendance (出勤打卡)',
+                  'Scores (成绩表现)',
+                  'Payment (缴费记录)',
+                  'Classes (班级与教练)'
+                ].map((item, idx) => (
+                  <div key={idx} className="p-2 bg-emerald-900/30 rounded-lg border border-emerald-500/20 text-emerald-200">
+                    🗄️ {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Convergence Down Arrow */}
+          <div className="flex justify-center -my-2">
+            <div className="px-4 py-1 rounded-full bg-purple-900/80 border border-purple-500/40 text-xs font-bold text-purple-300 flex items-center space-x-2 animate-bounce">
+              <ArrowDown className="w-4 h-4" />
+              <span>双柱数据流向 AI 智脑层汇聚 (Convergence)</span>
+              <ArrowDown className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* Convergence Layer: AI Brain Engine */}
+          <div className="glass-card rounded-2xl p-5 border border-purple-500/40 bg-purple-950/30 space-y-4">
+            <div className="flex justify-between items-center border-b border-purple-500/20 pb-3">
+              <div className="flex items-center space-x-2">
+                <div className="p-2 bg-purple-500/20 rounded-xl text-purple-400">
+                  <Brain className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-base font-bold text-white">AI 智脑层 (AI Brain Engine)</h4>
+                  <p className="text-xs text-gray-400">结合 Obsidian Vault 规则与 Business DB (LMS DB) 学员数据智能解答</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2 text-xs font-mono font-bold text-purple-300">
+                <span className="px-2 py-0.5 rounded bg-blue-900/60 border border-blue-500/30">FalkorDB</span>
+                <span>+</span>
+                <span className="px-2 py-0.5 rounded bg-emerald-900/60 border border-emerald-500/30">Graphiti</span>
+                <span>+</span>
+                <span className="px-2 py-0.5 rounded bg-purple-900/60 border border-purple-500/30">Hindsight</span>
+              </div>
+            </div>
+
+            {/* Business DB Highlights grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {BUSINESS_DB_HIGHLIGHTS.map((item, idx) => (
+                <div key={idx} className="p-3 bg-gray-950/60 rounded-xl border border-gray-800 text-xs flex items-start space-x-3">
+                  <div className="mt-0.5 shrink-0">{getHighlightIcon(item.icon)}</div>
+                  <div>
+                    <h5 className="font-bold text-white mb-0.5">{item.title}</h5>
+                    <p className="text-[11px] text-gray-400 leading-relaxed">{item.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       ) : (
-        /* Main Diagram */
+        /* Layer 4 diagram */
         <div className="space-y-6">
           {/* Layer 4: Top - User & AI Assistants */}
           <div className="glass-card rounded-xl p-4 border border-indigo-500/30 bg-indigo-950/20">
@@ -98,7 +249,7 @@ export const ArchitectureDiagram: React.FC = () => {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-white">L3 AI 调度与响应中枢 (Agent Core)</h4>
-                <p className="text-xs text-gray-400">接收提问 ➔ 判断意图 ➔ 分流查询静态真相库与动态记忆</p>
+                <p className="text-xs text-gray-400">接收提问 ➔ 判断意图 ➔ 联查 Obsidian SOP 与 Business DB (LMS DB)</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs">
@@ -114,11 +265,7 @@ export const ArchitectureDiagram: React.FC = () => {
           {/* Dual Engines Grid (Layer 1 & Layer 2) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
             {/* Layer 1: Static Truth Vault */}
-            <div
-              className={`glass-card rounded-xl p-5 border transition-all duration-300 ${
-                activeTab === 'dynamic' ? 'opacity-40 border-gray-800' : 'border-blue-500/50 bg-blue-950/30 shadow-lg shadow-blue-500/5'
-              }`}
-            >
+            <div className="glass-card rounded-xl p-5 border border-blue-500/50 bg-blue-950/30 shadow-lg shadow-blue-500/5">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
                   <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400">
@@ -153,11 +300,7 @@ export const ArchitectureDiagram: React.FC = () => {
             </div>
 
             {/* Layer 2: Dynamic Learning Network */}
-            <div
-              className={`glass-card rounded-xl p-5 border transition-all duration-300 ${
-                activeTab === 'static' ? 'opacity-40 border-gray-800' : 'border-emerald-500/50 bg-emerald-950/30 shadow-lg shadow-emerald-500/5'
-              }`}
-            >
+            <div className="glass-card rounded-xl p-5 border border-emerald-500/50 bg-emerald-950/30 shadow-lg shadow-emerald-500/5">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
                   <div className="p-2 bg-emerald-500/20 rounded-lg text-emerald-400">
@@ -169,12 +312,12 @@ export const ArchitectureDiagram: React.FC = () => {
                   </div>
                 </div>
                 <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
-                  AI 自动学习 · 持续进化
+                  AI 自动学习 · 结合 LMS DB
                 </span>
               </div>
 
               <p className="text-xs text-gray-300 mb-4 leading-relaxed">
-                像一位经验丰富的老员工，在日常问答中记住学员偏好、关怀记录与决策推演。由三大核心技术驱动：
+                像一位经验丰富的老员工，在日常问答中记住学员偏好、LMS 考勤成绩与决策推演。由三大核心技术驱动：
               </p>
 
               <div className="space-y-2">
