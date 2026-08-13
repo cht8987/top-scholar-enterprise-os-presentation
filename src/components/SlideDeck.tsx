@@ -10,6 +10,7 @@ import {
 import { DEPARTMENTS, ROADMAP_PHASES, FAQS } from '../data/presentationData';
 import { InteractiveRoiCalculator } from './InteractiveRoiCalculator';
 import { ArchitectureDiagram } from './ArchitectureDiagram';
+import { VaultTreeViewer } from './VaultTreeViewer';
 
 interface SlideDeckProps {
   currentSlide: number;
@@ -27,6 +28,7 @@ export const SlideDeck: React.FC<SlideDeckProps> = ({
   const [selectedDeptId, setSelectedDeptId] = useState<string>('01-product');
   const [selectedPhaseIdx, setSelectedPhaseIdx] = useState<number>(0);
   const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(0);
+  const [showVaultTree, setShowVaultTree] = useState<boolean>(false);
 
   // Keyboard navigation
   useEffect(() => {
@@ -221,7 +223,7 @@ export const SlideDeck: React.FC<SlideDeckProps> = ({
             </div>
           )}
 
-          {/* SLIDE 3: 6 Department Knowledge Hubs */}
+          {/* SLIDE 3: 6 Department Knowledge Hubs & Full Vault Tree */}
           {currentSlide === 3 && (
             <div className="glass-panel rounded-3xl p-6 md:p-8 border border-blue-500/20 shadow-2xl min-h-[620px] flex flex-col justify-between">
               <div>
@@ -236,87 +238,113 @@ export const SlideDeck: React.FC<SlideDeckProps> = ({
                     <p className="text-sm text-gray-400">每个部门拥有独立管理的知识库专区，互不干扰，统一汇总</p>
                   </div>
 
-                  {/* Dept Tabs Selector */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {DEPARTMENTS.map((dept) => (
-                      <button
-                        key={dept.id}
-                        onClick={() => setSelectedDeptId(dept.id)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-                          selectedDeptId === dept.id
-                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                            : 'bg-gray-900/80 text-gray-400 hover:text-gray-200 border border-gray-800'
-                        }`}
-                      >
-                        {getDeptIcon(dept.icon)}
-                        <span>{dept.name.split(' ')[0]}</span>
-                      </button>
-                    ))}
+                  {/* Mode Switcher: Cards vs Full Vault Tree */}
+                  <div className="flex items-center space-x-2 bg-gray-900/80 p-1 rounded-xl border border-gray-800">
+                    <button
+                      onClick={() => setShowVaultTree(false)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        !showVaultTree ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
+                      }`}
+                    >
+                      部门卡片概览
+                    </button>
+                    <button
+                      onClick={() => setShowVaultTree(true)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        showVaultTree ? 'bg-emerald-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
+                      }`}
+                    >
+                      ★ 完整 2.2 Vault 目录树 (一字不删)
+                    </button>
                   </div>
                 </div>
 
-                {/* Selected Dept Detail Card */}
-                <div className="glass-card rounded-2xl p-6 border border-blue-500/30 bg-slate-900/40">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 pb-4 border-b border-gray-800">
-                    <div className="flex items-center space-x-3">
-                      <div className={`p-3 rounded-xl bg-gradient-to-r ${selectedDept.color} text-white shadow-md`}>
-                        {getDeptIcon(selectedDept.icon)}
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white">{selectedDept.name}</h3>
-                        <p className="text-xs text-gray-400">负责人/维护团队：{selectedDept.owner}</p>
-                      </div>
+                {!showVaultTree ? (
+                  <>
+                    {/* Dept Tabs Selector */}
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {DEPARTMENTS.map((dept) => (
+                        <button
+                          key={dept.id}
+                          onClick={() => setSelectedDeptId(dept.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 ${
+                            selectedDeptId === dept.id
+                              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                              : 'bg-gray-900/80 text-gray-400 hover:text-gray-200 border border-gray-800'
+                          }`}
+                        >
+                          {getDeptIcon(dept.icon)}
+                          <span>{dept.name.split(' ')[0]}</span>
+                        </button>
+                      ))}
                     </div>
-                    <span className="text-xs px-3 py-1 bg-blue-500/10 text-blue-300 border border-blue-500/30 rounded-lg">
-                      {selectedDept.description}
-                    </span>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Key Files */}
-                    <div className="space-y-2">
-                      <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                        包含的核心标准文档
-                      </h4>
-                      <div className="space-y-1.5">
-                        {selectedDept.keyFiles.map((file, idx) => (
-                          <div key={idx} className="p-2 bg-gray-950/60 rounded-lg border border-gray-800 text-xs font-mono text-gray-300 flex items-center justify-between">
-                            <span>📄 {file}</span>
-                            <span className="text-[10px] text-blue-400">权威 SOP</span>
+                    {/* Selected Dept Detail Card */}
+                    <div className="glass-card rounded-2xl p-6 border border-blue-500/30 bg-slate-900/40">
+                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 pb-4 border-b border-gray-800">
+                        <div className="flex items-center space-x-3">
+                          <div className={`p-3 rounded-xl bg-gradient-to-r ${selectedDept.color} text-white shadow-md`}>
+                            {getDeptIcon(selectedDept.icon)}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* AI Assistant Role */}
-                    <div className="space-y-2">
-                      <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                        <Sparkles className="w-4 h-4 text-purple-400" />
-                        配备的 AI 数字助手职责
-                      </h4>
-                      <div className="p-4 bg-purple-950/20 rounded-xl border border-purple-500/30 text-xs text-purple-200 leading-relaxed min-h-[110px] flex items-center">
-                        {selectedDept.assistantRole}
-                      </div>
-                    </div>
-
-                    {/* Business Benefits */}
-                    <div className="space-y-2">
-                      <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                        <Zap className="w-4 h-4 text-amber-400" />
-                        为本部门带来的价值
-                      </h4>
-                      <div className="space-y-2">
-                        {selectedDept.benefits.map((b, idx) => (
-                          <div key={idx} className="p-2.5 bg-emerald-950/20 rounded-lg border border-emerald-500/20 text-xs text-emerald-300 flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            <span>{b}</span>
+                          <div>
+                            <h3 className="text-xl font-bold text-white">{selectedDept.name}</h3>
+                            <p className="text-xs text-gray-400">负责人/维护团队：{selectedDept.owner}</p>
                           </div>
-                        ))}
+                        </div>
+                        <span className="text-xs px-3 py-1 bg-blue-500/10 text-blue-300 border border-blue-500/30 rounded-lg">
+                          {selectedDept.description}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Key Files */}
+                        <div className="space-y-2">
+                          <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            包含的核心标准文档
+                          </h4>
+                          <div className="space-y-1.5">
+                            {selectedDept.keyFiles.map((file, idx) => (
+                              <div key={idx} className="p-2 bg-gray-950/60 rounded-lg border border-gray-800 text-xs font-mono text-gray-300 flex items-center justify-between">
+                                <span>📄 {file}</span>
+                                <span className="text-[10px] text-blue-400">权威 SOP</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* AI Assistant Role */}
+                        <div className="space-y-2">
+                          <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                            <Sparkles className="w-4 h-4 text-purple-400" />
+                            配备的 AI 数字助手职责
+                          </h4>
+                          <div className="p-4 bg-purple-950/20 rounded-xl border border-purple-500/30 text-xs text-purple-200 leading-relaxed min-h-[110px] flex items-center">
+                            {selectedDept.assistantRole}
+                          </div>
+                        </div>
+
+                        {/* Business Benefits */}
+                        <div className="space-y-2">
+                          <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                            <Zap className="w-4 h-4 text-amber-400" />
+                            为本部门带来的价值
+                          </h4>
+                          <div className="space-y-2">
+                            {selectedDept.benefits.map((b, idx) => (
+                              <div key={idx} className="p-2.5 bg-emerald-950/20 rounded-lg border border-emerald-500/20 text-xs text-emerald-300 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                <span>{b}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </>
+                ) : (
+                  <VaultTreeViewer />
+                )}
               </div>
 
               <div className="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-800">

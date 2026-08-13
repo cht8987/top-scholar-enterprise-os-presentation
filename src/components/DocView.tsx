@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BookOpen, Layers, ArrowLeft, ShieldCheck, Cpu } from 'lucide-react';
 import { DEPARTMENTS, ROADMAP_PHASES } from '../data/presentationData';
+import { VaultTreeViewer } from './VaultTreeViewer';
 
 interface DocViewProps {
   onSwitchToSlides: () => void;
@@ -25,7 +26,7 @@ export const DocView: React.FC<DocViewProps> = ({ onSwitchToSlides }) => {
             Top Scholar 企业智脑策略全景文档库
           </h1>
           <p className="text-xs md:text-sm text-gray-400 mt-1">
-            重构通俗版：完全移除晦涩技术黑话，保留 100% 商业价值与落地路线
+            重构通俗版：完全移除晦涩技术黑话，保留 100% 商业价值与完整 2.2 Vault 目录树
           </p>
         </div>
 
@@ -93,7 +94,7 @@ export const DocView: React.FC<DocViewProps> = ({ onSwitchToSlides }) => {
             </div>
           </div>
 
-          {/* Section 2 */}
+          {/* Section 2: Department breakdown */}
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-white flex items-center gap-2 border-l-4 border-purple-500 pl-3">
               二、 6 大部门知识分区明细
@@ -118,6 +119,11 @@ export const DocView: React.FC<DocViewProps> = ({ onSwitchToSlides }) => {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Section 2.2: Full Vault Tree */}
+          <div className="space-y-4 pt-4 border-t border-gray-800">
+            <VaultTreeViewer />
           </div>
         </div>
       ) : (

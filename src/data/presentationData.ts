@@ -210,3 +210,122 @@ export const FAQS: FaqItem[] = [
     tag: '资产沉淀'
   }
 ];
+
+export const FULL_VAULT_TREE = `TS-KNOWLEDGE/
+│
+├── 00-COMPANY/                     # 全员可读 —— 公司级真相源
+│   ├── 价值观与行为准则.md           # 六戒原文 + 红线对照
+│   ├── 创办人与团队.md
+│   ├── 品牌口径.md                   # ★ 学生数、荣誉、slogan 唯一版本
+│   ├── 荣誉与媒体资产.md
+│   └── 组织架构与职责.md
+│
+├── 01-PRODUCT/                     # 全员可读 —— ★ 单一价格真相
+│   ├── 产品线总览.md
+│   ├── 国英挑战课.md
+│   ├── 国英特训.md                  # 含课表、8大特点、期数定义
+│   ├── Premium小组特训.md
+│   ├── 状元班.md
+│   ├── A-LEADER假期营.md
+│   ├── 书籍与教材.md
+│   ├── 价格表.md                    # ★★ 唯一权威版本
+│   └── 付费方式与分期.md
+│
+├── 02-MARKETING/                   # 营销团队专用
+│   ├── SOP/
+│   │   ├── 招生SOP-Meta广告.md
+│   │   ├── 招生SOP-社媒.md
+│   │   ├── 招生SOP-Telegram.md
+│   │   └── 招生SOP-Email.md
+│   ├── PLAYBOOK/
+│   │   ├── 文案方法论.md            # 4U · 七宗罪 · 标准框架 · CTA
+│   │   └── 品牌调性与禁用词.md      # ★ 反夸大红线
+│   ├── KNOWLEDGE/
+│   │   ├── winning-ads/            # 每条 winning ad 一个文件 + 表现数据
+│   │   └── 内容选题库/
+│   ├── 00-WORKSPACE/
+│   │   ├── INBOX/                  # 待处理 brief、竞品信息
+│   │   ├── DRAFTS/                 # 文案草稿（待审核）
+│   │   └── SUBMISSIONS/            # 已提交内容
+│   └── CASES/
+│       └── 竞品分析报告/
+│
+├── 03-SALES/                       # 销售团队专用
+│   ├── SOP/
+│   │   ├── 大型活动5阶段节奏.md
+│   │   ├── Booking-Call-6步SOP.md
+│   │   ├── Follow-Up-7日流程.md
+│   │   └── Closing流程.md
+│   ├── PLAYBOOK/
+│   │   ├── 家长FAQ-5类.md
+│   │   └── 异议处理-6类.md
+│   ├── KNOWLEDGE/
+│   │   └── 成交案例库/
+│   ├── 00-WORKSPACE/
+│   │   ├── INBOX/
+│   │   └── DRAFTS/
+│   └── RESOURCES/
+│
+├── 04-CUSTOMER-SUCCESS/            # 客户成功团队专用
+│   ├── SOP/
+│   │   ├── Enrollment-System.md
+│   │   ├── 报名后SOP-三个Box.md
+│   │   ├── Student-Success-Journey.md
+│   │   └── CS黄金原则.md
+│   ├── PLAYBOOK/
+│   │   ├── 红黄绿灯SOP.md           # ★ 未来由系统自动判定
+│   │   └── 续费与升单SOP.md
+│   ├── KNOWLEDGE/
+│   │   ├── 家长关怀模板库/
+│   │   └── 客户疑问-视频教学清单.md
+│   ├── CUSTOMER-CONTEXT/           # 客户画像与偏好
+│   └── CASES/
+│
+├── 05-ACADEMIC/                    # 教务团队专用
+│   ├── SOP/
+│   │   ├── 批改标准.md
+│   │   └── 教材使用指南.md
+│   ├── PLAYBOOK/
+│   │   ├── 教学理念-SEE.md
+│   │   └── A+五环系统.md
+│   ├── KNOWLEDGE/
+│   │   ├── 课表与分组规则.md
+│   │   └── 教材与workbook索引.md
+│   ├── CURRICULUM/
+│   └── CASES/
+│
+├── 06-OPERATIONS-IT/              # IT/运营团队专用（Elson 主场）
+│   ├── SOP/
+│   │   ├── 开号与enrol流程.md
+│   │   ├── Zoom链接发放规则.md
+│   │   └── 故障排查手册.md
+│   ├── PLAYBOOK/
+│   │   └── 系统运维手册.md
+│   ├── KNOWLEDGE/
+│   │   ├── 系统清单与账号.md        # 不含密码
+│   │   ├── 数据字典.md
+│   │   └── 权限申请流程.md
+│   ├── IT/
+│   │   ├── Docker部署指南.md
+│   │   ├── n8n工作流文档.md
+│   │   └── 备份与恢复runbook.md
+│   └── 00-WORKSPACE/
+│       ├── INBOX/
+│       └── DRAFTS/
+│
+├── 90-RESOURCES/                   # 公共资源
+│   ├── Templates/                  # 模板库
+│   ├── References/                 # 参考文档
+│   └── External-Docs/              # 外部文档
+│
+├── 99-META/                        # 元数据与治理
+│   ├── Taxonomy.md                 # 标签体系
+│   ├── Glossary.md                 # 术语表
+│   ├── Pending-Verification.md     # ★ 待核实清单（所有 ❓ 集中在这里）
+│   ├── Knowledge-Health.md         # 知识库健康度报告
+│   └── Changelog.md                # 更新日志
+│
+└── _SYSTEM/                        # 系统层（不入检索库）
+    ├── Inbox/                      # 全局输入暂存
+    ├── Processing/                 # 处理中
+    └── Output/                     # 待审核输出`;
