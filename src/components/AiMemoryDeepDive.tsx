@@ -23,19 +23,47 @@ export const AiMemoryDeepDive: React.FC = () => {
         <div>
           <div className="flex items-center space-x-2 text-xs font-bold text-purple-400 uppercase tracking-widest mb-1">
             <Sparkles className="w-4 h-4" />
-            <span>AI Memory 核心技术三剑客深度解构</span>
+            <span>双源喂入管道：Obsidian SOP + Business DB (LMS 数据库)</span>
           </div>
           <h2 className="text-2xl font-black text-white flex items-center gap-2">
-            FalkorDB + Graphiti + Hindsight 协同逻辑
+            AI Memory 三剑客 (FalkorDB + Graphiti + Hindsight) 喂入解构
           </h2>
           <p className="text-xs text-gray-400 mt-1">
-            通俗化解说与专业分析结合：三层互不替代，共同防止 AI 幻觉，赋予企业大脑持久生命力
+            说明：AI MEMORY 不仅吸收静态 SOP，更将 Business DB（教练、老师、学生考勤成绩与订阅）实时喂入记忆网！
           </p>
         </div>
 
-        <span className="px-3 py-1 bg-purple-500/10 text-purple-300 border border-purple-500/30 rounded-xl text-xs font-semibold">
-          数据 100% 本地私有化
+        <span className="px-3 py-1 bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 rounded-xl text-xs font-semibold">
+          双源实时喂入管道已通
         </span>
+      </div>
+
+      {/* Ingestion Banner: Business DB + Obsidian -> AI Memory */}
+      <div className="p-4 bg-gradient-to-r from-blue-950/60 via-purple-950/60 to-emerald-950/60 rounded-2xl border border-purple-500/40 space-y-3">
+        <div className="flex justify-between items-center text-xs">
+          <span className="font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+            <Layers className="w-4 h-4 text-amber-400" />
+            AI MEMORY 双源喂入流动线 (Data Ingestion Pipeline)
+          </span>
+          <span className="text-[10px] text-gray-400 font-mono">Live Ingestion Pipeline</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div className="p-3 bg-blue-900/40 rounded-xl border border-blue-500/30 text-blue-200">
+            <div className="font-bold text-white mb-1">1. Obsidian SOP 知识喂入</div>
+            <p className="text-[11px] text-gray-300">把制度规范、唯一价格表、营销 Playbook 喂给 AI MEMORY 建立底层规则防线。</p>
+          </div>
+
+          <div className="p-3 bg-emerald-900/40 rounded-xl border border-emerald-500/30 text-emerald-200">
+            <div className="font-bold text-white mb-1">2. Business DB (LMS 入口) 喂入</div>
+            <p className="text-[11px] text-gray-300">把教练(Coach)、老师(Teacher)、学生(Student)打卡考勤与成绩实效数据喂入 FalkorDB & Graphiti。</p>
+          </div>
+
+          <div className="p-3 bg-purple-900/40 rounded-xl border border-purple-500/30 text-purple-200">
+            <div className="font-bold text-white mb-1">3. AI 大脑双向智联响应</div>
+            <p className="text-[11px] text-gray-300">AI 助手回答问题时，同时调取“规章标准”与“学生当前学情”，输出精准零失误方案。</p>
+          </div>
+        </div>
       </div>
 
       {/* 3-Pillar Tab Buttons */}
@@ -92,7 +120,7 @@ export const AiMemoryDeepDive: React.FC = () => {
             <div>
               <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <Cpu className="w-4 h-4 text-blue-400" />
-                技术定位与核心职责
+                技术定位与 Business DB 喂入逻辑
               </h4>
               <p className="text-xs text-gray-200 leading-relaxed bg-blue-950/20 p-4 rounded-xl border border-blue-500/20">
                 {activeComp.techDetails}
@@ -135,26 +163,6 @@ export const AiMemoryDeepDive: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Comparison: Why 3-Tier engine is superior */}
-      <div className="p-5 bg-gradient-to-r from-blue-950/40 via-purple-950/40 to-slate-900/40 rounded-2xl border border-purple-500/30">
-        <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-amber-400" />
-          对比：为什么传统简单搜索会失败，而 3 剑客组合完美解决？
-        </h4>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div className="p-4 bg-red-950/20 rounded-xl border border-red-500/20 text-gray-300 space-y-1.5">
-            <div className="font-bold text-red-400">❌ 传统普通向量/关键词搜索痛点：</div>
-            <p className="text-gray-400">无时间线观念、无法关联网状上下文。把“学员3个月前的成绩”和“现在的表现”混为一谈，导致答非所问，AI 容易盲目产生幻觉。</p>
-          </div>
-
-          <div className="p-4 bg-emerald-950/20 rounded-xl border border-emerald-500/20 text-gray-200 space-y-1.5">
-            <div className="font-bold text-emerald-400">✓ FalkorDB + Graphiti + Hindsight 解决之道：</div>
-            <p className="text-gray-300">FalkorDB 秒级搜关系，Graphiti 追踪时间历史，Hindsight 复盘记录人工纠错。精准理解业务演进，越用越符合 Top Scholar 的实际标准。</p>
           </div>
         </div>
       </div>
