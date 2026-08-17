@@ -4,13 +4,19 @@ import confetti from 'canvas-confetti';
 import {
   ChevronLeft, ChevronRight, Sparkles, Building2, Tag, Megaphone,
   TrendingUp, Users, GraduationCap, Server, ShieldCheck, CheckCircle2,
-  Award, HelpCircle, ArrowRight, Lightbulb, Zap, UserCheck
+  AlertTriangle, Cpu, Layers, Database,
+  Bot, Clock, CheckSquare, Square, ArrowRight,
+  Lock, BookOpen, Lightbulb
 } from 'lucide-react';
 
-import { DEPARTMENTS, ROADMAP_PHASES, FAQS } from '../data/presentationData';
-import { InteractiveRoiCalculator } from './InteractiveRoiCalculator';
-import { ArchitectureDiagram } from './ArchitectureDiagram';
-import { VaultTreeViewer } from './VaultTreeViewer';
+import {
+  SLIDES_META,
+  DEPARTMENTS_DATA,
+  LMS_BUNDLES,
+  ROLES_ARCHITECTURE,
+  API_RATES_DATA,
+  DECISIONS_LIST
+} from '../data/presentationData';
 
 interface SlideDeckProps {
   currentSlide: number;
@@ -25,10 +31,11 @@ export const SlideDeck: React.FC<SlideDeckProps> = ({
   totalSlides,
   onSwitchToDocView
 }) => {
-  const [selectedDeptId, setSelectedDeptId] = useState<string>('01-product');
-  const [selectedPhaseIdx, setSelectedPhaseIdx] = useState<number>(0);
-  const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(0);
-  const [showVaultTree, setShowVaultTree] = useState<boolean>(false);
+  const [selectedDeptId, setSelectedDeptId] = useState<string>('02-marketing');
+  const [selectedBundleId, setSelectedBundleId] = useState<string>('web-core');
+  const [selectedRoleIdx, setSelectedRoleIdx] = useState<number>(2); // Default to Organization
+  const [activeScenarioTab, setActiveScenarioTab] = useState<'mkt' | 'cs' | 'aca' | 'exec'>('mkt');
+  const [checkedDecisions, setCheckedDecisions] = useState<Record<string, boolean>>({});
 
   // Keyboard navigation
   useEffect(() => {
@@ -43,12 +50,20 @@ export const SlideDeck: React.FC<SlideDeckProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentSlide, totalSlides, setCurrentSlide]);
 
-  const handleConfetti = () => {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
+  const toggleDecision = (id: string) => {
+    const newChecked = { ...checkedDecisions, [id]: !checkedDecisions[id] };
+    setCheckedDecisions(newChecked);
+
+    // If all checked, fire confetti
+    const allChecked = DECISIONS_LIST.every(d => newChecked[d.id]);
+    if (allChecked) {
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#D4AF37', '#F59E0B', '#10B981', '#FFFFFF']
+      });
+    }
   };
 
   const getDeptIcon = (iconName: string) => {
@@ -64,897 +79,1129 @@ export const SlideDeck: React.FC<SlideDeckProps> = ({
     }
   };
 
-  const selectedDept = DEPARTMENTS.find(d => d.id === selectedDeptId) || DEPARTMENTS[1];
+  const currentMeta = SLIDES_META.find(s => s.id === currentSlide) || SLIDES_META[0];
+  const selectedDept = DEPARTMENTS_DATA.find(d => d.id === selectedDeptId) || DEPARTMENTS_DATA[0];
+  const selectedBundle = LMS_BUNDLES.find(b => b.id === selectedBundleId) || LMS_BUNDLES[0];
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-6">
-      {/* Slide Navigation Header Bar */}
-      <div className="flex items-center justify-between bg-slate-900/80 backdrop-blur-md p-3 rounded-2xl border border-gray-800 mb-6 shadow-xl">
+    <div className="w-full max-w-7xl mx-auto px-4 py-4 sm:py-6">
+      {/* Sci-Fi Gold Navigation Header Bar */}
+      <div className="flex flex-wrap items-center justify-between glass-panel-gold p-3.5 rounded-2xl mb-6 shadow-2xl relative overflow-hidden">
+        <div className="scan-line"></div>
         <div className="flex items-center space-x-3">
           <span className="flex h-3 w-3 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
           </span>
-          <span className="text-xs font-bold text-gray-300 tracking-wider uppercase">
-            Top Scholar Enterprise OS 演示幻灯片
+          <span className="text-xs font-bold tracking-widest uppercase text-amber-300">
+            TOP SCHOLAR AI ENTERPRISE OS · 2026-08-18 ACTION PLAN
+          </span>
+          <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+            {currentMeta.badge}
           </span>
         </div>
 
-        {/* Slide Counter & Dots */}
-        <div className="hidden md:flex items-center space-x-1.5">
-          {Array.from({ length: totalSlides }).map((_, idx) => (
+        {/* Slide Progress Indicator & Controls */}
+        <div className="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0">
+          <div className="text-xs text-gray-400 font-mono">
+            <span className="text-amber-400 font-bold text-sm">{String(currentSlide).padStart(2, '0')}</span>
+            <span className="text-gray-600"> / </span>
+            <span>{String(totalSlides).padStart(2, '0')}</span>
+          </div>
+
+          <div className="flex items-center space-x-1.5 bg-[#0e121b] p-1 rounded-xl border border-amber-500/20">
             <button
-              key={idx}
-              onClick={() => setCurrentSlide(idx + 1)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                currentSlide === idx + 1
-                  ? 'w-8 bg-gradient-to-r from-blue-500 to-purple-500 shadow-md shadow-blue-500/30'
-                  : 'w-2 bg-gray-800 hover:bg-gray-700'
-              }`}
-              title={`Slide ${idx + 1}`}
-            />
-          ))}
-        </div>
+              onClick={() => currentSlide > 1 && setCurrentSlide(currentSlide - 1)}
+              disabled={currentSlide === 1}
+              className="p-1.5 rounded-lg text-gray-400 hover:text-amber-300 hover:bg-amber-500/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              title="上一页 (Left Arrow)"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
 
-        {/* Control Buttons */}
-        <div className="flex items-center space-x-2">
+            {/* Mini dots */}
+            <div className="hidden md:flex items-center space-x-1 px-2">
+              {SLIDES_META.map(slide => (
+                <button
+                  key={slide.id}
+                  onClick={() => setCurrentSlide(slide.id)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    slide.id === currentSlide
+                      ? 'w-6 bg-gradient-to-r from-amber-400 to-amber-600 shadow-[0_0_8px_rgba(245,158,11,0.6)]'
+                      : 'w-1.5 bg-gray-700 hover:bg-gray-500'
+                  }`}
+                  title={`${slide.id}. ${slide.title}`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={() => currentSlide < totalSlides && setCurrentSlide(currentSlide + 1)}
+              disabled={currentSlide === totalSlides}
+              className="p-1.5 rounded-lg text-gray-400 hover:text-amber-300 hover:bg-amber-500/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              title="下一页 (Right Arrow / Space)"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
           <button
-            onClick={() => setCurrentSlide(Math.max(1, currentSlide - 1))}
-            disabled={currentSlide === 1}
-            className="p-2 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+            onClick={onSwitchToDocView}
+            className="hidden lg:flex items-center space-x-1.5 text-xs text-amber-400/80 hover:text-amber-300 hover:bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 transition-all"
           >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <span className="text-xs font-mono font-bold text-blue-400 px-2 py-1 bg-gray-950 rounded-lg border border-gray-800">
-            {currentSlide} / {totalSlides}
-          </span>
-          <button
-            onClick={() => setCurrentSlide(Math.min(totalSlides, currentSlide + 1))}
-            disabled={currentSlide === totalSlides}
-            className="p-2 rounded-xl bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition shadow-lg shadow-blue-600/20"
-          >
-            <ChevronRight className="w-4 h-4" />
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>阅读完整报告</span>
           </button>
         </div>
       </div>
 
-      {/* Main Slide Content Stage */}
+      {/* Slide Content Area with AnimatePresence */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
-          initial={{ opacity: 0, y: 15, scale: 0.99 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -15, scale: 0.99 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="w-full min-h-[620px] flex flex-col justify-between"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -15 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+          className="min-h-[620px] flex flex-col justify-between"
         >
-          {/* SLIDE 1: Vision & Pain Points */}
+          {/* ========================================================================= */}
+          {/* SLIDE 1: COVER & EXECUTIVE SUMMARY                                        */}
+          {/* ========================================================================= */}
           {currentSlide === 1 && (
-            <div className="glass-panel rounded-3xl p-8 md:p-12 border border-blue-500/20 shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[620px]">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl -z-10"></div>
-              <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -z-10"></div>
-
-              <div>
-                <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold mb-6">
+            <div className="glass-panel-gold rounded-3xl p-8 sm:p-12 relative overflow-hidden border border-amber-500/30">
+              <div className="scan-line"></div>
+              
+              <div className="max-w-4xl">
+                <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-6">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Top Scholar 企业级 AI OS 汇报演示</span>
+                  <span>2026-08-18 (周二) · 核心决策共创会汇报案</span>
                 </div>
 
-                <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4 tracking-tight">
-                  构建 Top Scholar <br />
-                  <span className="gradient-text">企业数字大脑与 AI 岗位分身</span>
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-4">
+                  <span className="gradient-text-gold">TOP SCHOLAR</span>
+                  <br />
+                  <span className="text-white">AI Enterprise OS 落地与基础设施行动方案</span>
                 </h1>
 
-                <p className="text-gray-300 text-base md:text-lg max-w-3xl leading-relaxed mb-8">
-                  用最通俗易懂的方式，打破人员流动导致的知识流失与效率瓶颈。把全公司的 SOP、价格体系与业务话术转化为<strong className="text-white">永远属于 Top Scholar 的数字资产</strong>。
+                <p className="text-base sm:text-xl text-gray-300 leading-relaxed font-light mb-8 max-w-3xl">
+                  以 <span className="text-amber-300 font-semibold">Obsidian 双向知识底座</span> 为真理源头，结合 <span className="text-amber-300 font-semibold">Graphiti + FalkorDB + Hindsight</span> 企业大脑，通过 <span className="text-amber-300 font-semibold">Rocket LMS</span> 与 <span className="text-amber-300 font-semibold">Hermes 主动哨兵 Agent</span> 赋能各部门 Leader，实现人机协同的数字化飞跃。
                 </p>
 
-                {/* Comparison Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
-                  <div className="glass-card rounded-2xl p-6 border-red-500/20 bg-red-950/10">
-                    <h3 className="text-base font-bold text-red-400 mb-3 flex items-center gap-2">
-                      ⚠️ 传统运作模式的三大痛点
-                    </h3>
-                    <ul className="space-y-2.5 text-xs md:text-sm text-gray-300">
-                      <li className="flex items-start gap-2">
-                        <span className="text-red-400 font-bold">•</span>
-                        <span><strong>知识在人脑里</strong>：员工离职或休假，SOP 与客户细节随之流失。</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-red-400 font-bold">•</span>
-                        <span><strong>口径不统一</strong>：销售报价错算、客服给错课表，内耗严重。</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-red-400 font-bold">•</span>
-                        <span><strong>重复问答低效</strong>：每天花费大量工时在重复询问“哪拿链接？价格多少？”。</span>
-                      </li>
-                    </ul>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                  <div className="glass-card-gold p-4 rounded-2xl">
+                    <div className="text-2xl font-bold gradient-text-gold">7 大分区</div>
+                    <div className="text-xs text-gray-400 mt-1">TS-KNOWLEDGE 业务矩阵</div>
                   </div>
+                  <div className="glass-card-gold p-4 rounded-2xl">
+                    <div className="text-2xl font-bold gradient-text-gold">40+ 插件</div>
+                    <div className="text-xs text-gray-400 mt-1">Rocket LMS 全套开箱即用</div>
+                  </div>
+                  <div className="glass-card-gold p-4 rounded-2xl">
+                    <div className="text-2xl font-bold gradient-text-gold">~$24 /月</div>
+                    <div className="text-xs text-gray-400 mt-1">AI 全套固定订阅极致性价比</div>
+                  </div>
+                  <div className="glass-card-gold p-4 rounded-2xl">
+                    <div className="text-2xl font-bold gradient-text-gold">1 Week</div>
+                    <div className="text-xs text-gray-400 mt-1">Hermes 部门 Agent 极简上线</div>
+                  </div>
+                </div>
 
-                  <div className="glass-card rounded-2xl p-6 border-emerald-500/20 bg-emerald-950/10">
-                    <h3 className="text-base font-bold text-emerald-400 mb-3 flex items-center gap-2">
-                      ✨ Enterprise OS 数字智脑解决之道
-                    </h3>
-                    <ul className="space-y-2.5 text-xs md:text-sm text-gray-300">
-                      <li className="flex items-start gap-2">
-                        <span className="text-emerald-400 font-bold">✓</span>
-                        <span><strong>资产永存公司</strong>：人类整理权威 SOP，数据 100% 留存在本地。</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-emerald-400 font-bold">✓</span>
-                        <span><strong>单一真相定价</strong>：全公司唯一权威价格库，报价准确率 100%。</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-emerald-400 font-bold">✓</span>
-                        <span><strong>全员 AI 助手</strong>：每个岗位配置专属 AI 助理，秒级答复，效率翻倍。</span>
-                      </li>
-                    </ul>
+                <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400">
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span>汇报人：<strong className="text-white">Elson</strong></span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span>协同对象：<strong className="text-white">Aaron / Alex / Ying Lin / Becky</strong></span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span>文档密级：<strong className="text-amber-300">内部核心决策材料</strong></span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 gap-4">
-                <span>汇报人：Elson (IT & Marketing) · Top Scholar Enterprise Strategy</span>
+              <div className="mt-10 flex justify-end">
                 <button
                   onClick={() => setCurrentSlide(2)}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold flex items-center space-x-2 hover:opacity-90 transition shadow-lg shadow-blue-500/20"
+                  className="flex items-center space-x-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-sm transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)]"
                 >
-                  <span>探索双层智脑架构</span>
+                  <span>进入架构总览</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
           )}
 
-          {/* SLIDE 2: Dual-Engine Architecture */}
+          {/* ========================================================================= */}
+          {/* SLIDE 2: TWIN-LOOP ARCHITECTURE                                           */}
+          {/* ========================================================================= */}
           {currentSlide === 2 && (
-            <div className="min-h-[620px] flex flex-col justify-between space-y-6">
-              <ArchitectureDiagram />
-              <div className="flex justify-between items-center text-xs text-gray-400">
-                <span>提示：点击顶部高亮按钮可切换查看静态真相库与动态神经网分工</span>
-                <button
-                  onClick={() => setCurrentSlide(3)}
-                  className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold flex items-center space-x-2 hover:bg-blue-500 transition"
-                >
-                  <span>进入 6 大部门知识地图</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+            <div className="space-y-6">
+              <div className="border-b border-amber-500/20 pb-4">
+                <span className="text-xs font-bold text-amber-400 tracking-wider uppercase">01 / ARCHITECTURE</span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">人机共创的双向知识闭环架构</h2>
+                <p className="text-sm text-gray-400 mt-1">业务人员掌控 Markdown 真相源头，AI 自动化入图与记忆进化，杜绝知识库腐烂。</p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                {/* Visual Closed Loop Cards */}
+                <div className="lg:col-span-8 space-y-4">
+                  {/* Step 1: Obsidian Vault */}
+                  <div className="glass-panel-gold p-5 rounded-2xl border-l-4 border-l-amber-400 relative">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                          <BookOpen className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-mono text-amber-400 font-bold">LAYER 1 · 核心真理源头 (Single Source of Truth)</div>
+                          <h3 className="text-base font-bold text-white">Obsidian Vault: TS-KNOWLEDGE</h3>
+                        </div>
+                      </div>
+                      <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 font-mono">人可编辑 · Git版本化</span>
+                    </div>
+                    <p className="text-xs text-gray-300 mt-2.5 leading-relaxed">
+                      Markdown + Frontmatter 结构化数据 + 双向链接。按 00~06 部门文件夹严格隔离权限。业务人员直接在日常维护 SOP，所有修改均产生 Git Commit，变更清晰可审计。
+                    </p>
+                  </div>
+
+                  {/* Flow Trigger */}
+                  <div className="flex items-center justify-center text-amber-400 text-xs font-mono py-0.5">
+                    <span className="px-3 py-1 rounded-full bg-slate-900 border border-amber-500/30">▼ 变更触发：n8n Watch / Git Commit Hook</span>
+                  </div>
+
+                  {/* Step 2: Graphiti & FalkorDB */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="glass-card-gold p-4 rounded-2xl border-l-4 border-l-cyan-400">
+                      <div className="flex items-center space-x-2 text-cyan-300 mb-2">
+                        <Cpu className="w-4 h-4" />
+                        <span className="text-xs font-bold font-mono">Graphiti · 时序图谱抽取</span>
+                      </div>
+                      <p className="text-xs text-gray-300 leading-relaxed">
+                        实体抽取 · 关系网络构建 · 时间戳多版本留痕 · 增量自动入图。
+                      </p>
+                    </div>
+
+                    <div className="glass-card-gold p-4 rounded-2xl border-l-4 border-l-indigo-400">
+                      <div className="flex items-center space-x-2 text-indigo-300 mb-2">
+                        <Database className="w-4 h-4" />
+                        <span className="text-xs font-bold font-mono">FalkorDB · GraphRAG 混合检索</span>
+                      </div>
+                      <p className="text-xs text-gray-300 leading-relaxed">
+                        精准知识拓扑关系检索 + 高维语义向量混合检索，彻底杜绝大模型幻觉。
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Flow Trigger 2 */}
+                  <div className="flex items-center justify-center text-amber-400 text-xs font-mono py-0.5">
+                    <span className="px-3 py-1 rounded-full bg-slate-900 border border-amber-500/30">▼ GraphRAG 知识注入 / 决策采纳反馈</span>
+                  </div>
+
+                  {/* Step 3: Agents & Hindsight */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="glass-card-gold p-4 rounded-2xl border-l-4 border-l-emerald-400">
+                      <div className="flex items-center space-x-2 text-emerald-300 mb-2">
+                        <Bot className="w-4 h-4" />
+                        <span className="text-xs font-bold font-mono">LangGraph Agent 协同层</span>
+                      </div>
+                      <p className="text-xs text-gray-300 leading-relaxed">
+                        营销 (Ying Lin) / 销售&客服 (Becky) / 教务 / 运营IT 专属业务哨兵。
+                      </p>
+                    </div>
+
+                    <div className="glass-card-gold p-4 rounded-2xl border-l-4 border-l-amber-400">
+                      <div className="flex items-center space-x-2 text-amber-300 mb-2">
+                        <Sparkles className="w-4 h-4" />
+                        <span className="text-xs font-bold font-mono">Hindsight · 长期进化记忆</span>
+                      </div>
+                      <p className="text-xs text-gray-300 leading-relaxed">
+                        记录高频提问、有效采纳策略、SOP 偏差修正，越用越懂业务。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Panel: Why Markdown/Obsidian */}
+                <div className="lg:col-span-4 glass-panel-gold p-6 rounded-3xl flex flex-col justify-between border border-amber-500/30">
+                  <div>
+                    <div className="inline-flex items-center space-x-2 text-amber-300 text-xs font-bold mb-4">
+                      <Lightbulb className="w-4 h-4" />
+                      <span>核心架构哲学</span>
+                    </div>
+
+                    <h4 className="text-lg font-bold text-white mb-3">为什么 Obsidian 是源头，而非直接写图数据库？</h4>
+
+                    <div className="space-y-3 text-xs text-gray-300 leading-relaxed">
+                      <div className="p-3 rounded-xl bg-black/40 border border-gray-800">
+                        <strong className="text-amber-300">1. 人必须能直接编辑真相：</strong>
+                        <p className="mt-1 text-gray-400">图数据库不可读、无法人工直观修订、缺乏行级 Git Diff。一旦一线无法维护，知识库必然腐烂。</p>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-black/40 border border-gray-800">
+                        <strong className="text-amber-300">2. Markdown 是完美载体：</strong>
+                        <p className="mt-1 text-gray-400">兼具「人类可无门槛读写」、「AI 结构化高效解析」、「全生命周期版本可审计」三重属性。</p>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-black/40 border border-gray-800">
+                        <strong className="text-amber-300">3. AI 负责增量入图：</strong>
+                        <p className="mt-1 text-gray-400">人类只负责写好 Markdown，复杂的关系提取与时序图谱构建全交由后台自动化流水线处理。</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-amber-500/20 flex items-center justify-between text-[11px] text-amber-400/80">
+                    <span>架构设计 · 经久耐用</span>
+                    <span>Single Source of Truth</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* SLIDE 3: 6 Department Knowledge Hubs & Full Vault Tree */}
+          {/* ========================================================================= */}
+          {/* SLIDE 3: 7 DEPARTMENTS TS-KNOWLEDGE                                       */}
+          {/* ========================================================================= */}
           {currentSlide === 3 && (
-            <div className="glass-panel rounded-3xl p-6 md:p-8 border border-blue-500/20 shadow-2xl min-h-[620px] flex flex-col justify-between">
-              <div>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-gray-800 pb-4">
-                  <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                      6 大部门数字知识中枢地图
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                        专区隔离 · 只读保护
-                      </span>
-                    </h2>
-                    <p className="text-sm text-gray-400">每个部门拥有独立管理的知识库专区，互不干扰，统一汇总</p>
-                  </div>
+            <div className="space-y-6">
+              <div className="border-b border-amber-500/20 pb-4">
+                <span className="text-xs font-bold text-amber-400 tracking-wider uppercase">02 / ORGANIZATION</span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">TS-KNOWLEDGE 7 大业务分区与共创落地</h2>
+                <p className="text-sm text-gray-400 mt-1">Elson 搭建标准框架 ➔ 统一企业 Sync 订阅 ➔ 8/20–8/30 集中迁移 SOP。</p>
+              </div>
 
-                  {/* Mode Switcher: Cards vs Full Vault Tree */}
-                  <div className="flex items-center space-x-2 bg-gray-900/80 p-1 rounded-xl border border-gray-800">
-                    <button
-                      onClick={() => setShowVaultTree(false)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                        !showVaultTree ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
-                      }`}
-                    >
-                      部门卡片概览
-                    </button>
-                    <button
-                      onClick={() => setShowVaultTree(true)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                        showVaultTree ? 'bg-emerald-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
-                      }`}
-                    >
-                      ★ 完整 2.2 Vault 目录树 (一字不删)
-                    </button>
-                  </div>
-                </div>
-
-                {!showVaultTree ? (
-                  <>
-                    {/* Dept Tabs Selector */}
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      {DEPARTMENTS.map((dept) => (
-                        <button
-                          key={dept.id}
-                          onClick={() => setSelectedDeptId(dept.id)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 ${
-                            selectedDeptId === dept.id
-                              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                              : 'bg-gray-900/80 text-gray-400 hover:text-gray-200 border border-gray-800'
-                          }`}
-                        >
-                          {getDeptIcon(dept.icon)}
-                          <span>{dept.name.split(' ')[0]}</span>
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Selected Dept Detail Card */}
-                    <div className="glass-card rounded-2xl p-6 border border-blue-500/30 bg-slate-900/40">
-                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 pb-4 border-b border-gray-800">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Department Buttons */}
+                <div className="lg:col-span-5 space-y-2">
+                  {DEPARTMENTS_DATA.map(dept => {
+                    const isSelected = dept.id === selectedDeptId;
+                    return (
+                      <button
+                        key={dept.id}
+                        onClick={() => setSelectedDeptId(dept.id)}
+                        className={`w-full text-left p-3 rounded-2xl transition-all flex items-center justify-between border ${
+                          isSelected
+                            ? 'bg-amber-500/15 border-amber-400/60 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
+                            : 'glass-card-gold border-amber-500/10 hover:border-amber-500/30'
+                        }`}
+                      >
                         <div className="flex items-center space-x-3">
-                          <div className={`p-3 rounded-xl bg-gradient-to-r ${selectedDept.color} text-white shadow-md`}>
-                            {getDeptIcon(selectedDept.icon)}
+                          <div
+                            className="p-2 rounded-xl"
+                            style={{ backgroundColor: `${dept.color}20`, color: dept.color }}
+                          >
+                            {getDeptIcon(dept.icon)}
                           </div>
                           <div>
-                            <h3 className="text-xl font-bold text-white">{selectedDept.name}</h3>
-                            <p className="text-xs text-gray-400">负责人/维护团队：{selectedDept.owner}</p>
-                          </div>
-                        </div>
-                        <span className="text-xs px-3 py-1 bg-blue-500/10 text-blue-300 border border-blue-500/30 rounded-lg">
-                          {selectedDept.description}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {/* Key Files */}
-                        <div className="space-y-2">
-                          <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                            包含的核心标准文档
-                          </h4>
-                          <div className="space-y-1.5">
-                            {selectedDept.keyFiles.map((file, idx) => (
-                              <div key={idx} className="p-2 bg-gray-950/60 rounded-lg border border-gray-800 text-xs font-mono text-gray-300 flex items-center justify-between">
-                                <span>📄 {file}</span>
-                                <span className="text-[10px] text-blue-400">权威 SOP</span>
-                              </div>
-                            ))}
+                            <div className="text-xs font-mono text-gray-400 font-semibold">{dept.num}</div>
+                            <div className="text-sm font-bold text-white">{dept.name}</div>
                           </div>
                         </div>
 
-                        {/* AI Assistant Role */}
-                        <div className="space-y-2">
-                          <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                            <Sparkles className="w-4 h-4 text-purple-400" />
-                            配备的 AI 数字助手职责
-                          </h4>
-                          <div className="p-4 bg-purple-950/20 rounded-xl border border-purple-500/30 text-xs text-purple-200 leading-relaxed min-h-[110px] flex items-center">
-                            {selectedDept.assistantRole}
-                          </div>
+                        <div className="text-right">
+                          <span className="text-xs font-medium text-amber-300 block">{dept.owner}</span>
                         </div>
-
-                        {/* Business Benefits */}
-                        <div className="space-y-2">
-                          <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                            <Zap className="w-4 h-4 text-amber-400" />
-                            为本部门带来的价值
-                          </h4>
-                          <div className="space-y-2">
-                            {selectedDept.benefits.map((b, idx) => (
-                              <div key={idx} className="p-2.5 bg-emerald-950/20 rounded-lg border border-emerald-500/20 text-xs text-emerald-300 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                <span>{b}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <VaultTreeViewer />
-                )}
-              </div>
-
-              <div className="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-800">
-                <span>提示：点击上方按钮切换查看 6 大部门的具体文件与 AI 职责</span>
-                <button
-                  onClick={() => setCurrentSlide(4)}
-                  className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold flex items-center space-x-2 hover:bg-blue-500 transition"
-                >
-                  <span>查看全员 AI 岗位分身矩阵</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* SLIDE 4: AI Assistants Matrix */}
-          {currentSlide === 4 && (
-            <div className="glass-panel rounded-3xl p-6 md:p-8 border border-blue-500/20 shadow-2xl min-h-[620px] flex flex-col justify-between">
-              <div>
-                <div className="mb-6 border-b border-gray-800 pb-4">
-                  <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                    全员 AI 岗位数字分身矩阵
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                      人人配备专属 AI 助理
-                    </span>
-                  </h2>
-                  <p className="text-sm text-gray-400">不是替掉员工，而是为每位员工配上一名 7x24 小时不疲倦的高级全能助理</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    {
-                      role: '营销 AI 助手',
-                      user: 'Ying Lin (营销团队)',
-                      icon: Megaphone,
-                      color: 'border-purple-500/40 bg-purple-950/20 text-purple-300',
-                      task: '自动搜集 Winning Ads，根据 4U 规则生成爆款文案草稿，排查品牌禁用词。',
-                      effect: '文案撰写时间减少 80%'
-                    },
-                    {
-                      role: '销售 AI 助手',
-                      user: '销售主管与团队',
-                      icon: TrendingUp,
-                      color: 'border-amber-500/40 bg-amber-950/20 text-amber-300',
-                      task: '在与家长对话时 3 秒提供课程参数、生成精确报价单简报、提示异议破解话术。',
-                      effect: '报价准确率 100%，提升闭单'
-                    },
-                    {
-                      role: '客户成功 AI 助手',
-                      user: '客服主管与团队',
-                      icon: Users,
-                      color: 'border-cyan-500/40 bg-cyan-950/20 text-cyan-300',
-                      task: '自动判定学员红黄绿灯风险状态，生成家长月报初稿，定期发起关怀提醒。',
-                      effect: '流失风险提前 30 天拦截'
-                    },
-                    {
-                      role: '教务 AI 助手',
-                      user: '教务主管与老师',
-                      icon: GraduationCap,
-                      color: 'border-violet-500/40 bg-violet-950/20 text-violet-300',
-                      task: '智能推荐个性化批改评语，秒级检索 Workbook 讲义与配套课件。',
-                      effect: '批改效率大幅提升'
-                    },
-                    {
-                      role: '运营/IT AI 助手',
-                      user: 'Elson (IT 负责人)',
-                      icon: Server,
-                      color: 'border-slate-500/40 bg-slate-950/20 text-slate-300',
-                      task: '自动引导员工排查软件故障、规范 Zoom 链接分发、系统账号权限自动申请。',
-                      effect: '解决 80% IT 重复咨询'
-                    },
-                    {
-                      role: '高管 AI 仪表盘',
-                      user: 'Alex / Aaron (管理层)',
-                      icon: Award,
-                      color: 'border-emerald-500/40 bg-emerald-950/20 text-emerald-300',
-                      task: '随时以自然语言询问全公司 ROI、续费趋势、红灯学员清单与战略健康度。',
-                      effect: '决策信息零延迟呈现'
-                    }
-                  ].map((item, idx) => (
-                    <div key={idx} className={`glass-card rounded-2xl p-5 border ${item.color} flex flex-col justify-between space-y-3`}>
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="text-base font-bold text-white flex items-center gap-2">
-                            <item.icon className="w-4 h-4" />
-                            {item.role}
-                          </h3>
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-gray-900/80 border border-gray-800 text-gray-300 font-mono">
-                            {item.user}
-                          </span>
-                        </div>
-                        <p className="text-xs text-gray-300 leading-relaxed">{item.task}</p>
-                      </div>
-                      <div className="pt-2 border-t border-gray-800/80 flex items-center justify-between text-xs">
-                        <span className="text-gray-400">预期增效：</span>
-                        <span className="font-bold text-emerald-400">{item.effect}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-800">
-                <span>架构原则：AI 负责资料整理与拟稿，最终决定权永远在人类员工手里。</span>
-                <button
-                  onClick={() => setCurrentSlide(5)}
-                  className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold flex items-center space-x-2 hover:bg-blue-500 transition"
-                >
-                  <span>查看四阶段落地路线图</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* SLIDE 5: 4-Phase Roadmap */}
-          {currentSlide === 5 && (
-            <div className="glass-panel rounded-3xl p-6 md:p-8 border border-blue-500/20 shadow-2xl min-h-[620px] flex flex-col justify-between">
-              <div>
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-gray-800 pb-4">
-                  <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                      四阶段分步落地路线图
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                        小步快跑 · 极低风险
-                      </span>
-                    </h2>
-                    <p className="text-sm text-gray-400">拒绝大拆大建，从轻量启动逐步扩充至全流程 AI 原生运营</p>
-                  </div>
-
-                  {/* Phase selector buttons */}
-                  <div className="flex space-x-2 bg-gray-900/80 p-1 rounded-xl border border-gray-800">
-                    {ROADMAP_PHASES.map((p, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setSelectedPhaseIdx(idx)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                          selectedPhaseIdx === idx
-                            ? 'bg-blue-600 text-white shadow-md'
-                            : 'text-gray-400 hover:text-gray-200'
-                        }`}
-                      >
-                        {p.phase}
                       </button>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
 
-                {/* Roadmap Cards Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  {/* Left: Interactive Selected Phase Card */}
-                  <div className="lg:col-span-7 glass-card rounded-2xl p-6 border-blue-500/30 bg-blue-950/20 flex flex-col justify-between">
-                    <div>
-                      <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-800">
+                {/* Department Detail View */}
+                <div className="lg:col-span-7 glass-panel-gold p-6 rounded-3xl border border-amber-500/30 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between border-b border-gray-800 pb-4 mb-4">
+                      <div className="flex items-center space-x-3">
+                        <div
+                          className="p-3 rounded-2xl"
+                          style={{ backgroundColor: `${selectedDept.color}25`, color: selectedDept.color }}
+                        >
+                          {getDeptIcon(selectedDept.icon)}
+                        </div>
                         <div>
-                          <span className="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest">
-                            {ROADMAP_PHASES[selectedPhaseIdx].phase}
-                          </span>
-                          <h3 className="text-2xl font-black text-white">
-                            {ROADMAP_PHASES[selectedPhaseIdx].name}
-                          </h3>
-                        </div>
-                        <span className="px-3 py-1 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-semibold border border-blue-500/30">
-                          {ROADMAP_PHASES[selectedPhaseIdx].timeline}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-3 mb-6">
-                        <div className="p-3 bg-gray-900/80 rounded-xl border border-gray-800 text-center">
-                          <span className="text-[10px] text-gray-400 block">团队规模</span>
-                          <span className="text-sm font-bold text-white">{ROADMAP_PHASES[selectedPhaseIdx].teamSize}</span>
-                        </div>
-                        <div className="p-3 bg-gray-900/80 rounded-xl border border-gray-800 text-center">
-                          <span className="text-[10px] text-gray-400 block">基础设施服务器</span>
-                          <span className="text-xs font-bold text-white truncate block">{ROADMAP_PHASES[selectedPhaseIdx].servers}</span>
-                        </div>
-                        <div className="p-3 bg-gray-900/80 rounded-xl border border-gray-800 text-center">
-                          <span className="text-[10px] text-gray-400 block">月度预算</span>
-                          <span className="text-xs font-bold text-emerald-400 block">{ROADMAP_PHASES[selectedPhaseIdx].budget}</span>
+                          <span className="text-xs font-mono text-amber-400 font-bold">SECTION {selectedDept.num}</span>
+                          <h3 className="text-xl font-bold text-white">{selectedDept.name}</h3>
                         </div>
                       </div>
-
-                      <div className="space-y-3 mb-4">
-                        <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider">本阶段里程碑与关键目标：</h4>
-                        <div className="space-y-2">
-                          {ROADMAP_PHASES[selectedPhaseIdx].keyGoals.map((g, idx) => (
-                            <div key={idx} className="flex items-center space-x-2 text-xs text-gray-200">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                              <span>{g}</span>
-                            </div>
-                          ))}
-                        </div>
+                      <div className="text-right">
+                        <span className="text-xs text-gray-400 block">协同负责人</span>
+                        <span className="text-sm font-bold text-amber-300">{selectedDept.owner}</span>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20 text-xs text-blue-300 flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-blue-400 shrink-0" />
-                      <span>{ROADMAP_PHASES[selectedPhaseIdx].highlight}</span>
-                    </div>
-                  </div>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">涵盖核心范围</div>
+                        <p className="text-sm text-gray-200 leading-relaxed bg-black/30 p-3 rounded-xl border border-gray-800">
+                          {selectedDept.roleDescription}
+                        </p>
+                      </div>
 
-                  {/* Right: Quick Timeline Stepper */}
-                  <div className="lg:col-span-5 space-y-3">
-                    {ROADMAP_PHASES.map((p, idx) => (
-                      <div
-                        key={idx}
-                        onClick={() => setSelectedPhaseIdx(idx)}
-                        className={`p-4 rounded-2xl border transition-all cursor-pointer ${
-                          selectedPhaseIdx === idx
-                            ? 'bg-blue-900/30 border-blue-500/60 shadow-lg shadow-blue-500/10'
-                            : 'bg-gray-950/40 border-gray-800 hover:border-gray-700'
-                        }`}
-                      >
-                        <div className="flex justify-between items-center">
-                          <span className="text-xs font-bold text-blue-400">{p.phase}</span>
-                          <span className="text-[11px] text-gray-400">{p.timeline}</span>
-                        </div>
-                        <h4 className="text-sm font-bold text-white mt-1">{p.name}</h4>
-                        <div className="flex items-center space-x-2 mt-2">
-                          {p.assistants.map((a, aIdx) => (
-                            <span key={aIdx} className="text-[10px] px-2 py-0.5 rounded bg-gray-900 text-gray-300 border border-gray-800">
-                              {a}
+                      <div>
+                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">落地核心资产 (Key Markdown Files)</div>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedDept.focusFiles.map(file => (
+                            <span key={file} className="px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs font-mono text-amber-300">
+                              📄 {file}
                             </span>
                           ))}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
 
-              <div className="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-800">
-                <span>提示：初创期（前8周）以极低预算 RM 150-300/月 启动，每两周快速迭代验证。</span>
-                <button
-                  onClick={() => setCurrentSlide(6)}
-                  className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold flex items-center space-x-2 hover:bg-blue-500 transition"
-                >
-                  <span>查看全员极简同步方案</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* SLIDE 6: Sync & Collaboration */}
-          {currentSlide === 6 && (
-            <div className="glass-panel rounded-3xl p-6 md:p-8 border border-blue-500/20 shadow-2xl min-h-[620px] flex flex-col justify-between">
-              <div>
-                <div className="mb-6 border-b border-gray-800 pb-4">
-                  <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                    极简协同与零门槛体验
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                      Obsidian Sync 全员一键同步
-                    </span>
-                  </h2>
-                  <p className="text-sm text-gray-400">为什么非技术员工（销售、客服）能无痛上手？因为像手机记事本一样简单</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  {/* Tech Git vs Obsidian Sync */}
-                  <div className="glass-card rounded-2xl p-6 border-gray-800 bg-gray-950/40 space-y-4">
-                    <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-                      <h3 className="text-base font-bold text-gray-300">传统复杂 Git 方式 (❌ 不推荐普通团队)</h3>
-                      <span className="text-xs text-red-400 font-mono">门槛高</span>
-                    </div>
-                    <ul className="space-y-2.5 text-xs text-gray-400">
-                      <li>• 必须学习复杂代码命令 (commit / push / merge)</li>
-                      <li>• 发生文件冲突需要手动解冲突，普通员工极易迷茫</li>
-                      <li>• 每次修改要切分支提交，学习成本昂贵</li>
-                    </ul>
-                  </div>
-
-                  <div className="glass-card rounded-2xl p-6 border-cyan-500/40 bg-cyan-950/20 space-y-4">
-                    <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-                      <h3 className="text-base font-bold text-cyan-300">选用的 Obsidian Sync 方案 (✓ 最佳实践)</h3>
-                      <span className="text-xs text-emerald-400 font-mono">10分钟上手</span>
-                    </div>
-                    <ul className="space-y-2.5 text-xs text-gray-200">
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                        <span><strong>开箱即用</strong>：打字自动保存，后台隐形同步到主数据库</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                        <span><strong>极低成本</strong>：每台设备仅 $4/月 (全员 10 设备折合仅 RM 180/月)</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                        <span><strong>离线可用</strong>：没网也能随时查看编写，联网后秒级自动同步</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Distributed Vault Workflow */}
-                <div className="p-5 bg-blue-950/20 rounded-2xl border border-blue-500/30">
-                  <h4 className="text-xs font-bold text-blue-300 uppercase tracking-wider mb-3">
-                    分布式 Vault 协作架构 (分散编辑 ➔ 中央汇聚)
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-gray-300">
-                    <div className="p-3 bg-gray-900 rounded-xl border border-gray-800">
-                      <div className="font-bold text-white mb-1">1. 员工本地分散编辑</div>
-                      <p className="text-[11px] text-gray-400">营销在营销 Vault 整理文案，销售在销售 Vault 写 FAQ，离线流畅。</p>
-                    </div>
-                    <div className="p-3 bg-gray-900 rounded-xl border border-gray-800">
-                      <div className="font-bold text-white mb-1">2. Sync 自动汇聚主库</div>
-                      <p className="text-[11px] text-gray-400">后台隐形一键同步至中央主 Vault，自动按部门分区归类保存。</p>
-                    </div>
-                    <div className="p-3 bg-gray-900 rounded-xl border border-gray-800">
-                      <div className="font-bold text-white mb-1">3. AI 智脑自动索引</div>
-                      <p className="text-[11px] text-gray-400">AI 提取更新内容加入神经网记忆，全员时刻能问出最新知识。</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-800">
-                <span>优势：分散编辑降低主库压力，员工拥有个人工作台，数据版本随时追溯。</span>
-                <button
-                  onClick={() => setCurrentSlide(7)}
-                  className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold flex items-center space-x-2 hover:bg-blue-500 transition"
-                >
-                  <span>算一算系统 ROI 投资回报</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* SLIDE 7: ROI Calculator */}
-          {currentSlide === 7 && (
-            <div className="min-h-[620px] flex flex-col justify-between space-y-6">
-              <InteractiveRoiCalculator />
-              <div className="flex justify-between items-center text-xs text-gray-400">
-                <span>提示：可滑动上方的参数条，实时查看不同团队规模下的工时收益与回报率</span>
-                <button
-                  onClick={() => setCurrentSlide(8)}
-                  className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold flex items-center space-x-2 hover:bg-blue-500 transition"
-                >
-                  <span>查看数据安全与人类把关</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* SLIDE 8: Security & Governance */}
-          {currentSlide === 8 && (
-            <div className="glass-panel rounded-3xl p-6 md:p-8 border border-blue-500/20 shadow-2xl min-h-[620px] flex flex-col justify-between">
-              <div>
-                <div className="mb-6 border-b border-gray-800 pb-4">
-                  <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                    数据主权与三层安全防线
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                      数据不出公司 · 绝无盲目自动化
-                    </span>
-                  </h2>
-                  <p className="text-sm text-gray-400">回答高管最关心的数据隐私与 AI 幻觉校验问题</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Pillar 1 */}
-                  <div className="glass-card rounded-2xl p-6 border-emerald-500/30 bg-emerald-950/10 space-y-3">
-                    <div className="p-3 bg-emerald-500/20 rounded-xl text-emerald-400 w-fit">
-                      <ShieldCheck className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-base font-bold text-white">1. 数据主权全在本地</h3>
-                    <p className="text-xs text-gray-300 leading-relaxed">
-                      所有课程资料、价格表和学员个资全部保存在公司私有服务器中。未经许可绝不出库，<strong>不会被任何第三方大模型公开训练</strong>。
-                    </p>
-                  </div>
-
-                  {/* Pillar 2 */}
-                  <div className="glass-card rounded-2xl p-6 border-blue-500/30 bg-blue-950/10 space-y-3">
-                    <div className="p-3 bg-blue-500/20 rounded-xl text-blue-400 w-fit">
-                      <Lightbulb className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-base font-bold text-white">2. 3层防幻觉硬约束</h3>
-                    <p className="text-xs text-gray-300 leading-relaxed">
-                      AI 在回答涉及课程参数与价格时，强制匹配第一层【唯一权威价格库】，绝不允许凭空推算或给错价格。
-                    </p>
-                  </div>
-
-                  {/* Pillar 3 */}
-                  <div className="glass-card rounded-2xl p-6 border-purple-500/30 bg-purple-950/10 space-y-3">
-                    <div className="p-3 bg-purple-500/20 rounded-xl text-purple-400 w-fit">
-                      <UserCheck className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-base font-bold text-white">3. 人类最后一步把关</h3>
-                    <p className="text-xs text-gray-300 leading-relaxed">
-                      AI 负责资料整理、生成文案和分析建议。所有对外发送给家长的营销文案或关怀信息，<strong>必须由人类员工确认后发送</strong>。
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-800">
-                <span>原则：AI 是极致的得力助手，人类拥有最终决策指挥权。</span>
-                <button
-                  onClick={() => setCurrentSlide(9)}
-                  className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold flex items-center space-x-2 hover:bg-blue-500 transition"
-                >
-                  <span>查看前 8 周落地计划表</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* SLIDE 9: First 8 Weeks Action Plan */}
-          {currentSlide === 9 && (
-            <div className="glass-panel rounded-3xl p-6 md:p-8 border border-blue-500/20 shadow-2xl min-h-[620px] flex flex-col justify-between">
-              <div>
-                <div className="mb-6 border-b border-gray-800 pb-4">
-                  <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                    前 8 周落地行动计划表 (周周有产出)
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                      责任到人 · 双周验收
-                    </span>
-                  </h2>
-                  <p className="text-sm text-gray-400">详细划分每周任务，确保项目按时按质平稳落地</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  {[
-                    {
-                      week: 'Week 1 - 2',
-                      title: '骨架搭建与核心 SOP 迁移',
-                      owner: 'Elson + 各部门 Owner',
-                      tasks: [
-                        '创建 Obsidian Vault 知识目录',
-                        '迁移价格表、招商 SOP 规范',
-                        '全员配置 Obsidian Sync 同步',
-                        '第一轮知识健康检查'
-                      ]
-                    },
-                    {
-                      week: 'Week 3 - 4',
-                      title: '首批 AI 助手上线测试',
-                      owner: 'Elson + Ying Lin',
-                      tasks: [
-                        '上线营销 AI 助手测试文案生成',
-                        '上线运营 IT 助手解决发号排错',
-                        '各部门填充 30+ 篇核心 SOP',
-                        '收集首批员工使用反馈'
-                      ]
-                    },
-                    {
-                      week: 'Week 5 - 6',
-                      title: '销售与客服 AI 助手接入',
-                      owner: 'Elson + 销售/客服主管',
-                      tasks: [
-                        '接入销售 AI 助手与 FAQ 话术',
-                        '测试学员红黄绿灯判定功能',
-                        '全员日常习惯通过 AI 查知识',
-                        '优化 AI 响应速度与准确率'
-                      ]
-                    },
-                    {
-                      week: 'Week 7 - 8',
-                      title: '成果复盘与高管汇报',
-                      owner: 'Elson + 全员团队',
-                      tasks: [
-                        '知识库资产充实至 100+ 篇',
-                        '评估工时节省与准确率提升',
-                        '举行阶段复盘展示成果',
-                        '规划下一阶段延伸扩充'
-                      ]
-                    }
-                  ].map((item, idx) => (
-                    <div key={idx} className="glass-card rounded-2xl p-5 border border-blue-500/20 bg-slate-900/40 flex flex-col justify-between space-y-4">
                       <div>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-xs font-mono font-bold text-blue-400">{item.week}</span>
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-300">
-                            {item.owner}
-                          </span>
-                        </div>
-                        <h3 className="text-sm font-bold text-white mb-3">{item.title}</h3>
-                        <ul className="space-y-2 text-xs text-gray-300">
-                          {item.tasks.map((t, tIdx) => (
-                            <li key={tIdx} className="flex items-start gap-1.5">
-                              <span className="text-blue-400 font-bold">•</span>
-                              <span>{t}</span>
-                            </li>
-                          ))}
-                        </ul>
+                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">🌟 杀手级赋能亮点</div>
+                        <p className="text-xs text-emerald-300 bg-emerald-950/30 border border-emerald-500/30 p-3 rounded-xl">
+                          {selectedDept.killerFeature}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
 
-              <div className="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-800">
-                <span>交付保证：两周一次 Sync Meeting，即时调整优先级。</span>
-                <button
-                  onClick={() => setCurrentSlide(10)}
-                  className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold flex items-center space-x-2 hover:bg-blue-500 transition"
-                >
-                  <span>查看总结与高管 Q&A</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+                  {/* Sync Strategy Tip */}
+                  <div className="mt-6 pt-4 border-t border-gray-800 bg-black/40 p-4 rounded-2xl text-xs text-gray-300">
+                    <strong className="text-amber-300 block mb-1">⚙️ 多端协同策略 (Obsidian Sync)</strong>
+                    使用统一企业服务邮箱（如 <code className="text-amber-300">ai-admin@topscholar.com</code>）订阅官方 Sync，各部门设备共同接入对应分区，既保障资产归属公司，又免除复杂的网络同步折腾。
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* SLIDE 10: Summary & Executive FAQ */}
-          {currentSlide === 10 && (
-            <div className="glass-panel rounded-3xl p-6 md:p-8 border border-blue-500/20 shadow-2xl min-h-[620px] flex flex-col justify-between">
-              <div>
-                <div className="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
-                  <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                      总结与高管常见疑问解答 (FAQ)
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                        消解顾虑 · 达成共识
-                      </span>
-                    </h2>
-                    <p className="text-sm text-gray-400">点击下方问题查看通俗解答，开启 Top Scholar 企业智脑新篇章</p>
-                  </div>
+          {/* ========================================================================= */}
+          {/* SLIDE 4: HARDWARE & DEPLOYMENT & P0 BLOCKER                                */}
+          {/* ========================================================================= */}
+          {currentSlide === 4 && (
+            <div className="space-y-6">
+              <div className="border-b border-amber-500/20 pb-4">
+                <span className="text-xs font-bold text-amber-400 tracking-wider uppercase">03 / INFRASTRUCTURE</span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">设备配置、网络方案与 P0 紧急阻塞</h2>
+                <p className="text-sm text-gray-400 mt-1">解决 iMac 权限阻塞，推进 Phase 1 本地+Tailscale 快速启动。</p>
+              </div>
 
-                  <button
-                    onClick={handleConfetti}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold flex items-center space-x-2 shadow-lg shadow-amber-500/20 hover:opacity-90 transition"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    <span>庆祝启动企业智脑</span>
-                  </button>
+              {/* P0 Urgent Blocker Banner */}
+              <div className="p-5 rounded-3xl bg-red-950/40 border-2 border-red-500/60 shadow-[0_0_25px_rgba(239,68,68,0.2)] flex items-start space-x-4">
+                <div className="p-3 rounded-2xl bg-red-500/20 text-red-400 border border-red-500/40 shrink-0">
+                  <AlertTriangle className="w-6 h-6 animate-pulse" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="px-2.5 py-0.5 rounded-full bg-red-500 text-black font-extrabold text-[10px] uppercase tracking-wider">
+                      P0 紧急阻塞 (Urgent Blocker)
+                    </span>
+                    <h3 className="text-base font-bold text-white">iMac 主控机缺少管理员密码 (`topscholar operation`)</h3>
+                  </div>
+                  <p className="text-xs text-red-200/90 mt-1.5 leading-relaxed">
+                    当前 iMac 无法执行 Sudo 权限，导致本地无法安装 <strong>Docker、Node.js、PHP、Tailscale</strong> 等核心底层服务。<strong>明天的首要决策是交付管理员密码或现场重置权限</strong>，否则本地主节点与自动化服务无法启动。
+                  </p>
+                </div>
+              </div>
+
+              {/* Deployment Strategy Comparison */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="glass-panel-gold p-6 rounded-3xl border-2 border-amber-400/50 relative">
+                  <div className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/40">
+                    ⭐ 推荐采用 (Phase 1)
+                  </div>
+                  <div className="text-sm font-mono text-amber-400 font-bold mb-1">方案 A · 敏捷启动</div>
+                  <h4 className="text-lg font-bold text-white mb-3">本地 PC + Tailscale 虚拟组网</h4>
+                  
+                  <ul className="space-y-2 text-xs text-gray-300">
+                    <li className="flex items-start space-x-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span><strong>0 元额外云端成本</strong>：前期无外部学员访问，完全避免闲置云服务器浪费。</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span><strong>数据绝对可控</strong>：核心数据库与知识库保留在本地，安全性极高。</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span><strong>Tailscale 安全穿透</strong>：内部团队通过安全加密隧道即可直接跨网访问测试。</span>
+                    </li>
+                  </ul>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  {/* FAQs list */}
-                  <div className="lg:col-span-8 space-y-3">
-                    {FAQS.map((faq, idx) => (
-                      <div
-                        key={idx}
-                        className={`rounded-2xl border transition-all overflow-hidden ${
-                          openFaqIdx === idx
-                            ? 'bg-blue-950/30 border-blue-500/50 shadow-lg shadow-blue-500/5'
-                            : 'bg-gray-950/40 border-gray-800 hover:border-gray-700'
+                <div className="glass-panel-gold p-6 rounded-3xl border border-gray-800">
+                  <div className="text-sm font-mono text-gray-400 font-bold mb-1">方案 B · 生产交付</div>
+                  <h4 className="text-lg font-bold text-white mb-3">云端 VPS + 独立域名 (Phase 2)</h4>
+                  
+                  <ul className="space-y-2 text-xs text-gray-300">
+                    <li className="flex items-start space-x-2">
+                      <span className="w-4 h-4 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center text-[10px] shrink-0 mt-0.5">⏱️</span>
+                      <span><strong>7×24 全球可用</strong>：待系统二次开发与测试完成、正式对外开放时切入。</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <span className="w-4 h-4 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center text-[10px] shrink-0 mt-0.5">🇲🇾</span>
+                      <span><strong>本地优质 VPS 推荐</strong>：<strong>Exabytes</strong> (发票报销方便)、<strong>Shinjiru</strong> (抗攻击强)、<strong>ServerFreak</strong> (性价比高)。</span>
+                    </li>
+                    <li className="flex items-start space-x-2">
+                      <span className="w-4 h-4 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center text-[10px] shrink-0 mt-0.5">☁️</span>
+                      <span><strong>备选国际节点</strong>：AWS Singapore / DigitalOcean Singapore (时延 &lt;15ms)。</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* SLIDE 5: ROCKET LMS BUNDLES & 5 ROLES ARCHITECTURE                         */}
+          {/* ========================================================================= */}
+          {currentSlide === 5 && (
+            <div className="space-y-5">
+              <div className="border-b border-amber-500/20 pb-3">
+                <span className="text-xs font-bold text-amber-400 tracking-wider uppercase">04 / LMS PLATFORM</span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">Rocket LMS 采购深度拆解与 5 大角色体系</h2>
+                <p className="text-sm text-gray-400 mt-0.5">三大核心包功能全景 · 5 大角色分权 · Regular License 合法合规判定。</p>
+              </div>
+
+              {/* Sub-tabs: 3 Bundles vs 5 Roles */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                {/* Left 7 cols: 3 Bundles Breakdown */}
+                <div className="lg:col-span-7 space-y-3">
+                  <div className="flex space-x-2 border-b border-gray-800 pb-2">
+                    {LMS_BUNDLES.map(bundle => (
+                      <button
+                        key={bundle.id}
+                        onClick={() => setSelectedBundleId(bundle.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                          bundle.id === selectedBundleId
+                            ? 'bg-amber-500 text-black shadow-[0_0_12px_rgba(245,158,11,0.5)]'
+                            : 'bg-black/40 text-gray-400 hover:text-white border border-gray-800'
                         }`}
                       >
-                        <button
-                          onClick={() => setOpenFaqIdx(openFaqIdx === idx ? null : idx)}
-                          className="w-full p-4 text-left font-semibold text-sm text-white flex justify-between items-center gap-4"
-                        >
-                          <span className="flex items-center gap-2">
-                            <HelpCircle className="w-4 h-4 text-blue-400 shrink-0" />
-                            {faq.question}
-                          </span>
-                          <span className="text-xs px-2.5 py-0.5 rounded bg-gray-900 text-gray-400 border border-gray-800 shrink-0">
-                            {faq.tag}
-                          </span>
-                        </button>
-
-                        {openFaqIdx === idx && (
-                          <div className="px-4 pb-4 text-xs text-gray-300 leading-relaxed border-t border-blue-500/20 pt-3">
-                            {faq.answer}
-                          </div>
-                        )}
-                      </div>
+                        {bundle.name}
+                      </button>
                     ))}
                   </div>
 
-                  {/* Summary Box */}
-                  <div className="lg:col-span-4 glass-card rounded-2xl p-6 border-purple-500/30 bg-purple-950/10 flex flex-col justify-between space-y-4">
-                    <div>
-                      <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
-                        <Award className="w-5 h-5 text-purple-400" />
-                        一句话核心总结
-                      </h3>
-                      <p className="text-xs text-gray-300 leading-relaxed">
-                        Top Scholar 企业智脑不是昂贵复杂的大工程，而是<strong>「全员边用边建、人类把关权威、AI 岗位分身全能辅助」</strong>的现代化工具。
-                      </p>
+                  <div className="glass-panel-gold p-4 rounded-2xl border border-amber-500/20">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <span className="text-[10px] font-mono text-amber-400 font-bold">{selectedBundle.type} · {selectedBundle.itemCode}</span>
+                        <h4 className="text-base font-bold text-white">{selectedBundle.name}</h4>
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+                        Regular License 适用
+                      </span>
                     </div>
 
-                    <div className="p-4 bg-gray-950/60 rounded-xl border border-gray-800 text-xs text-gray-300 space-y-2">
-                      <div className="flex items-center justify-between text-blue-400 font-semibold">
-                        <span>阶段预算：</span>
-                        <span>首期月投入仅 RM 330+</span>
-                      </div>
-                      <div className="flex items-center justify-between text-emerald-400 font-semibold">
-                        <span>团队上手：</span>
-                        <span>10 分钟简单体验</span>
-                      </div>
-                      <div className="flex items-center justify-between text-purple-400 font-semibold">
-                        <span>最终收益：</span>
-                        <span>节省 80% 重复工时</span>
-                      </div>
+                    <div className="text-[11px] text-gray-400 font-mono mb-3 bg-black/40 p-2 rounded-lg border border-gray-800">
+                      🛠️ 技术底座：{selectedBundle.techStack}
                     </div>
 
-                    <button
-                      onClick={onSwitchToDocView}
-                      className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-bold text-xs shadow-xl hover:opacity-90 transition flex items-center justify-center space-x-2"
-                    >
-                      <span>阅读完整策略与蓝图文档</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
+                    <div className="space-y-1.5 mb-3">
+                      <div className="text-xs font-bold text-amber-300">核心功能清单：</div>
+                      {selectedBundle.keyFeatures.map((feat, i) => (
+                        <div key={i} className="flex items-start space-x-2 text-xs text-gray-300">
+                          <span className="text-amber-400 mt-0.5">▪</span>
+                          <span>{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200">
+                      💡 <strong>业务价值</strong>：{selectedBundle.businessImpact}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right 5 cols: 5 Roles Architecture & License Decision */}
+                <div className="lg:col-span-5 space-y-3">
+                  <div className="glass-panel-gold p-4 rounded-2xl border border-amber-500/30">
+                    <div className="flex items-center justify-between mb-3 border-b border-gray-800 pb-2">
+                      <div className="text-xs font-bold text-amber-300 flex items-center space-x-1.5">
+                        <Layers className="w-4 h-4" />
+                        <span>5 大权限角色体系 (RBAC)</span>
+                      </div>
+                      <span className="text-[10px] text-gray-400">点击查看职责</span>
+                    </div>
+
+                    <div className="space-y-1.5 mb-3">
+                      {ROLES_ARCHITECTURE.map((role, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedRoleIdx(idx)}
+                          className={`w-full text-left p-2 rounded-xl text-xs transition-all flex items-center justify-between border ${
+                            idx === selectedRoleIdx
+                              ? 'bg-amber-500/20 border-amber-400/60 text-white font-bold'
+                              : 'bg-black/30 border-gray-800 text-gray-400 hover:text-gray-200'
+                          }`}
+                        >
+                          <span>{role.name}</span>
+                          <span className="text-[10px] font-mono text-amber-300">{role.tag}</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Role Detail Box */}
+                    <div className="bg-black/50 p-3 rounded-xl border border-gray-800 text-xs space-y-1.5">
+                      <div className="text-amber-300 font-semibold">{ROLES_ARCHITECTURE[selectedRoleIdx].level}</div>
+                      <p className="text-gray-300 text-[11px] leading-relaxed">{ROLES_ARCHITECTURE[selectedRoleIdx].scope}</p>
+                      <div className="pt-1.5 border-t border-gray-800/60 text-[11px] text-cyan-300">
+                        ⭐ <strong>在 Top Scholar 的应用</strong>：{ROLES_ARCHITECTURE[selectedRoleIdx].topScholarScenario}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* License Legality Callout */}
+                  <div className="glass-card-gold p-3 rounded-2xl border border-emerald-500/30 bg-emerald-950/20 text-xs text-gray-200">
+                    <div className="flex items-center space-x-1.5 text-emerald-400 font-bold mb-1">
+                      <ShieldCheck className="w-4 h-4" />
+                      <span>Envato 官方授权规则判定</span>
+                    </div>
+                    Top Scholar 用于交付自研课程与给内部学员看回放，<strong>购买 Regular License 100% 合法合规</strong>（无需花 $499 买 Extended），单项数十美元，整体节省数百美元！
                   </div>
                 </div>
               </div>
+            </div>
+          )}
 
-              <div className="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-800">
-                <span>Top Scholar Enterprise OS Presentation · All Rights Reserved</span>
-                <span className="text-blue-400 font-semibold">Ready to Launch! 🚀</span>
+          {/* ========================================================================= */}
+          {/* SLIDE 6: AI SUBSCRIPTION MATRIX & 2026 API RATES                           */}
+          {/* ========================================================================= */}
+          {currentSlide === 6 && (
+            <div className="space-y-5">
+              <div className="border-b border-amber-500/20 pb-3">
+                <span className="text-xs font-bold text-amber-400 tracking-wider uppercase">05 / AI STACK & PRICING</span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">AI 订阅矩阵与 2026 最新官方 API 资费</h2>
+                <p className="text-sm text-gray-400 mt-0.5">月度固定订阅仅 ~$24/月 · 2026 官方实测资费标准与降本杀手锏。</p>
+              </div>
+
+              {/* Monthly Subscriptions Bar */}
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                <div className="glass-card-gold p-3 rounded-2xl">
+                  <div className="text-xs text-gray-400 font-medium">Claude Pro</div>
+                  <div className="text-lg font-bold text-white mt-0.5">$20.00 <span className="text-[10px] text-gray-500">/月</span></div>
+                  <div className="text-[10px] text-amber-300/90 mt-1">架构与高难度代码开发</div>
+                </div>
+
+                <div className="glass-card-gold p-3 rounded-2xl">
+                  <div className="text-xs text-gray-400 font-medium">Gemini Advanced</div>
+                  <div className="text-lg font-bold text-white mt-0.5">约 $1.50 <span className="text-[10px] text-gray-500">/月</span></div>
+                  <div className="text-[10px] text-amber-300/90 mt-1">Shopee RM80/年费方案</div>
+                </div>
+
+                <div className="glass-card-gold p-3 rounded-2xl">
+                  <div className="text-xs text-gray-400 font-medium">Agnes Starter</div>
+                  <div className="text-lg font-bold text-white mt-0.5">$4.00 <span className="text-[10px] text-gray-500">/月</span></div>
+                  <div className="text-[10px] text-amber-300/90 mt-1">Agent 敏捷路由工作流</div>
+                </div>
+
+                <div className="glass-card-gold p-3 rounded-2xl">
+                  <div className="text-xs text-gray-400 font-medium">DeepSeek API</div>
+                  <div className="text-lg font-bold text-white mt-0.5">预充 $20</div>
+                  <div className="text-[10px] text-emerald-400 mt-1">Pay-as-you-go (极度耐用)</div>
+                </div>
+
+                <div className="glass-panel-gold p-3 rounded-2xl border-2 border-amber-400/50 bg-amber-500/10 col-span-2 sm:col-span-1">
+                  <div className="text-xs text-amber-300 font-bold">固定订阅合计</div>
+                  <div className="text-xl font-extrabold gradient-text-gold mt-0.5">~$24.00 <span className="text-[10px] text-amber-200">/月</span></div>
+                  <div className="text-[10px] text-amber-300/90 mt-1">极低固定月费</div>
+                </div>
+              </div>
+
+              {/* API Rates Table */}
+              <div className="glass-panel-gold p-4 rounded-3xl border border-amber-500/20 overflow-x-auto">
+                <div className="text-xs font-bold text-amber-300 mb-3 flex items-center justify-between">
+                  <span>📊 核心模型 2026 官方 API 资费与角色分工表</span>
+                  <span className="text-[11px] font-normal text-gray-400">单位：每 100 万 Tokens (1M Tokens)</span>
+                </div>
+
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-gray-800 text-gray-400 font-mono">
+                      <th className="pb-2 font-semibold">厂商与模型</th>
+                      <th className="pb-2 font-semibold">输入单价 (Input)</th>
+                      <th className="pb-2 font-semibold">输出单价 (Output)</th>
+                      <th className="pb-2 font-semibold">缓存优惠 (Cache)</th>
+                      <th className="pb-2 font-semibold">在 Hermes 中的分工</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-800/60 font-sans">
+                    {API_RATES_DATA.map((item, i) => (
+                      <tr key={i} className="hover:bg-amber-500/5 transition-colors">
+                        <td className="py-2.5 font-bold text-white">
+                          <div>{item.model}</div>
+                          <div className="text-[10px] font-mono text-gray-500">{item.provider}</div>
+                        </td>
+                        <td className="py-2.5 text-amber-300 font-mono">{item.inputPrice}</td>
+                        <td className="py-2.5 text-gray-200 font-mono">{item.outputPrice}</td>
+                        <td className="py-2.5 text-emerald-400 font-mono">{item.cachePrice}</td>
+                        <td className="py-2.5 text-gray-300">
+                          <div>{item.roleInHermes}</div>
+                          <div className="text-[10px] text-gray-500">{item.highlight}</div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* 3 Cost Optimization Pillars */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div className="p-3 rounded-2xl bg-black/40 border border-gray-800">
+                  <strong className="text-amber-300">🌙 1. DeepSeek 峰谷半价：</strong>
+                  <span className="text-gray-400 block mt-0.5">非高峰时段（包含马来西亚夜间与清晨）全部自动折半 50%。</span>
+                </div>
+                <div className="p-3 rounded-2xl bg-black/40 border border-gray-800">
+                  <strong className="text-amber-300">⚡ 2. Prompt Caching 80-95% OFF：</strong>
+                  <span className="text-gray-400 block mt-0.5">Claude / DeepSeek 命中缓存时，输入成本直降 80%~95%。</span>
+                </div>
+                <div className="p-3 rounded-2xl bg-black/40 border border-gray-800">
+                  <strong className="text-amber-300">📦 3. Batch 批处理 50% 折扣：</strong>
+                  <span className="text-gray-400 block mt-0.5">夜间批量批改作业与生成学情周报，享受 50% 额外折扣。</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* SLIDE 7: HERMES AGENT ACTIVE SENTINEL KILLER SCENARIOS                     */}
+          {/* ========================================================================= */}
+          {currentSlide === 7 && (
+            <div className="space-y-5">
+              <div className="border-b border-amber-500/20 pb-3">
+                <span className="text-xs font-bold text-amber-400 tracking-wider uppercase">06 / HERMES AGENT</span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">Hermes Agent 各部门杀手级业务赋能</h2>
+                <p className="text-sm text-gray-400 mt-0.5">从「被动问答」升级为「主动业务哨兵」 · 深度穿透营销、客服与管理决策。</p>
+              </div>
+
+              {/* Department Tabs */}
+              <div className="flex flex-wrap gap-2 border-b border-gray-800 pb-3">
+                <button
+                  onClick={() => setActiveScenarioTab('mkt')}
+                  className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center space-x-2 ${
+                    activeScenarioTab === 'mkt'
+                      ? 'bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
+                      : 'glass-card-gold text-gray-300 hover:text-white'
+                  }`}
+                >
+                  <Megaphone className="w-4 h-4" />
+                  <span>🎯 营销端赋能 (Ying Lin)</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveScenarioTab('cs')}
+                  className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center space-x-2 ${
+                    activeScenarioTab === 'cs'
+                      ? 'bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
+                      : 'glass-card-gold text-gray-300 hover:text-white'
+                  }`}
+                >
+                  <Users className="w-4 h-4" />
+                  <span>🎯 销售与客服赋能 (Becky)</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveScenarioTab('aca')}
+                  className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center space-x-2 ${
+                    activeScenarioTab === 'aca'
+                      ? 'bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
+                      : 'glass-card-gold text-gray-300 hover:text-white'
+                  }`}
+                >
+                  <GraduationCap className="w-4 h-4" />
+                  <span>🎯 教务与教研赋能</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveScenarioTab('exec')}
+                  className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center space-x-2 ${
+                    activeScenarioTab === 'exec'
+                      ? 'bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
+                      : 'glass-card-gold text-gray-300 hover:text-white'
+                  }`}
+                >
+                  <Building2 className="w-4 h-4" />
+                  <span>🎯 高管经营问答 (Alex/Aaron)</span>
+                </button>
+              </div>
+
+              {/* Tab Contents */}
+              <div className="glass-panel-gold p-6 rounded-3xl border border-amber-500/30">
+                {activeScenarioTab === 'mkt' && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-gray-800 pb-2">
+                      <h4 className="text-base font-bold text-white">营销端杀手级赋能 (Ying Lin 专属 Agent)</h4>
+                      <span className="text-xs text-amber-300 font-mono">Telegram Bot + n8n 广告哨兵</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="p-4 rounded-2xl bg-black/40 border border-gray-800 space-y-2">
+                        <div className="text-amber-400 font-bold text-xs flex items-center space-x-1.5">
+                          <span>🎬</span>
+                          <span>AI 短视频生产线</span>
+                        </div>
+                        <p className="text-xs text-gray-300 leading-relaxed">
+                          输入课程卖点，自动输出 <strong>30秒黄金短视频脚本</strong>（前3秒吸睛痛点 + 教学解法 + 结尾强CTA），并直接生成 CapCut/剪映分镜结构。
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-2xl bg-black/40 border border-gray-800 space-y-2">
+                        <div className="text-amber-400 font-bold text-xs flex items-center space-x-1.5">
+                          <span>📝</span>
+                          <span>5 类切入点文案 + UTM 自动注入</span>
+                        </div>
+                        <p className="text-xs text-gray-300 leading-relaxed">
+                          一键批量生成 5 类不同心理切入点文案（恐慌、干货、名师、家长、故事），自动注入合规 UTM 标签，确保 Pixel 报表口径 100% 准确。
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-2xl bg-black/40 border border-gray-800 space-y-2">
+                        <div className="text-amber-400 font-bold text-xs flex items-center space-x-1.5">
+                          <span>🔔</span>
+                          <span>Meta 广告监控哨兵 (Ads Sentinel)</span>
+                        </div>
+                        <p className="text-xs text-gray-300 leading-relaxed">
+                          自动监控广告数据：当 CTR &lt; 1.5% 或 CPA 超标时，自动在 Telegram 告警并提供针对性调优建议（如建议更换前 3 秒视频素材）。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeScenarioTab === 'cs' && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-gray-800 pb-2">
+                      <h4 className="text-base font-bold text-white">销售与客服端杀手级赋能 (Becky 专属 Agent)</h4>
+                      <span className="text-xs text-amber-300 font-mono">Telegram Bot + WhatsApp 话术生成</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="p-4 rounded-2xl bg-black/40 border border-gray-800 space-y-2">
+                        <div className="text-cyan-400 font-bold text-xs flex items-center space-x-1.5">
+                          <span>📡</span>
+                          <span>学员流失预警「关怀雷达」</span>
+                        </div>
+                        <p className="text-xs text-gray-300 leading-relaxed">
+                          关联 LMS 出勤与作业：学员出现「连续 2 次缺课 / 未交作业」红黄灯时，自动为 Becky 生成有温度的 WhatsApp 家长沟通草稿。
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-2xl bg-black/40 border border-gray-800 space-y-2">
+                        <div className="text-cyan-400 font-bold text-xs flex items-center space-x-1.5">
+                          <span>💌</span>
+                          <span>一键家长学情喜报生成器</span>
+                        </div>
+                        <p className="text-xs text-gray-300 leading-relaxed">
+                          提取学员当周出勤、Quiz 得分与作业评语，一键生成排版精美、充满鼓励的学情喜报，<strong>大幅拉升家长满意度与续费率</strong>。
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-2xl bg-black/40 border border-gray-800 space-y-2">
+                        <div className="text-cyan-400 font-bold text-xs flex items-center space-x-1.5">
+                          <span>🎯</span>
+                          <span>SOP 秒查与丢单二次激活</span>
+                        </div>
+                        <p className="text-xs text-gray-300 leading-relaxed">
+                          快速索引退费、延期等官方标准；针对「已读不回」或「价格犹豫」家长，自动匹配成单案例库生成高情商破冰话术。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeScenarioTab === 'aca' && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-gray-800 pb-2">
+                      <h4 className="text-base font-bold text-white">教务与教研端赋能 (Academic Team)</h4>
+                      <span className="text-xs text-purple-300 font-mono">错题归纳 + 讲义快速生成</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="p-4 rounded-2xl bg-black/40 border border-gray-800 space-y-2">
+                        <div className="text-purple-400 font-bold text-xs">📊 课后共性错题智能诊断与复习讲义</div>
+                        <p className="text-xs text-gray-300 leading-relaxed">
+                          自动汇总全班在 LMS 上的测验错题，分析高频共性知识盲区，秒级生成下节课的重点针对性复习讲义。
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-2xl bg-black/40 border border-gray-800 space-y-2">
+                        <div className="text-purple-400 font-bold text-xs">⚡ 教案大纲一键生成 Quiz 题库与生字卡</div>
+                        <p className="text-xs text-gray-300 leading-relaxed">
+                          输入教案大纲，自动生成配套的课堂 Quiz 题目（单选/多选/简答）及生字生词卡片，极大减轻老师备课负担。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeScenarioTab === 'exec' && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-gray-800 pb-2">
+                      <h4 className="text-base font-bold text-white">高管经营全息问答 (Alex / Aaron 专属决策助手)</h4>
+                      <span className="text-xs text-amber-300 font-mono">Ask-Me-Anything · 直连图数据库</span>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-black/40 border border-gray-800 space-y-3">
+                      <div className="text-xs text-gray-300 leading-relaxed">
+                        在手机端直接发问，秒级穿透 FalkorDB 图数据库与 TS-KNOWLEDGE 知识库给出有依据的事实回答：
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
+                        <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300">
+                          💬 "上周各科目出席率排行如何？"
+                        </div>
+                        <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300">
+                          💬 "目前退费率最低的是哪个班级？"
+                        </div>
+                        <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300">
+                          💬 "销售 SOP 执行偏差最大的环节在哪？"
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Safety Guardrails */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="glass-card-gold p-3.5 rounded-2xl border border-amber-500/20 flex items-start space-x-2.5">
+                  <ShieldCheck className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-white block">SOP 强约束防幻觉拦截</strong>
+                    <span className="text-gray-400">退费、定价与承诺强制 100% 引用知识库原文，无记录强阻断，严禁 AI 自由发挥。</span>
+                  </div>
+                </div>
+
+                <div className="glass-card-gold p-3.5 rounded-2xl border border-cyan-500/20 flex items-start space-x-2.5">
+                  <Lock className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-white block">PDPA 隐私脱敏网关</strong>
+                    <span className="text-gray-400">调用公有云 API 前，自动将学生/家长手机号、IC 身份证脱敏，完全符合马来西亚法规。</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* SLIDE 8: ROADMAP & 1-WEEK PLAYBOOK                                         */}
+          {/* ========================================================================= */}
+          {currentSlide === 8 && (
+            <div className="space-y-6">
+              <div className="border-b border-amber-500/20 pb-4">
+                <span className="text-xs font-bold text-amber-400 tracking-wider uppercase">07 / ROADMAP & ROLLOUT</span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">企业大脑演进节奏与 1 周落地 Playbook</h2>
+                <p className="text-sm text-gray-400 mt-1">1 个月企业大脑分阶段验证 + 1 周 Telegram Bot 极简培训推进表。</p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* 1 Month Brain Evolution */}
+                <div className="lg:col-span-5 glass-panel-gold p-6 rounded-3xl border border-amber-500/30 space-y-4">
+                  <div className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center space-x-2">
+                    <Database className="w-4 h-4" />
+                    <span>企业大脑 1 个月迭代路线</span>
+                  </div>
+
+                  <div className="space-y-3 text-xs">
+                    <div className="p-3 rounded-2xl bg-black/40 border border-gray-800">
+                      <div className="flex items-center justify-between text-amber-400 font-bold mb-1">
+                        <span>Phase A · 底座验证</span>
+                        <span className="text-[10px] font-mono text-gray-500">W1–W2 · Local PC</span>
+                      </div>
+                      <p className="text-gray-300">搭建 FalkorDB (Docker) + Graphiti 增量入图流水线，打通 Obsidian 自动抽取。</p>
+                    </div>
+
+                    <div className="p-3 rounded-2xl bg-black/40 border border-gray-800">
+                      <div className="flex items-center justify-between text-amber-400 font-bold mb-1">
+                        <span>Phase B · 记忆注入</span>
+                        <span className="text-[10px] font-mono text-gray-500">W3 · Local PC</span>
+                      </div>
+                      <p className="text-gray-300">接入 Hindsight 长期记忆模块，记录各部门提问偏好与修正反馈。</p>
+                    </div>
+
+                    <div className="p-3 rounded-2xl bg-black/40 border border-gray-800">
+                      <div className="flex items-center justify-between text-amber-400 font-bold mb-1">
+                        <span>Phase C · 稳定迁移</span>
+                        <span className="text-[10px] font-mono text-gray-500">W4 · 专用机 / VPS</span>
+                      </div>
+                      <p className="text-gray-300">系统稳定后，固化至独立 Mini PC 或轻量 Cloud VPS 长期驻留运行。</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 1 Week Rollout Playbook */}
+                <div className="lg:col-span-7 glass-panel-gold p-6 rounded-3xl border border-amber-500/30 flex flex-col justify-between">
+                  <div>
+                    <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center space-x-2 mb-4">
+                      <Clock className="w-4 h-4" />
+                      <span>Hermes 部门 Agent 1 周极简上线表 (Playbook)</span>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div className="p-3.5 rounded-2xl bg-black/40 border-l-4 border-l-amber-400 border border-gray-800">
+                        <div className="flex items-center justify-between text-white font-bold mb-1">
+                          <span>Day 1–2 · 环境配置与 Bot 授权</span>
+                          <span className="text-[10px] font-mono text-amber-300">跑通 Telegram 联调</span>
+                        </div>
+                        <p className="text-gray-300 leading-relaxed">
+                          配置 Telegram Bot Token，绑定 Ying Lin 与 Becky 的专属权限白名单与指令映射。
+                        </p>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-black/40 border-l-4 border-l-cyan-400 border border-gray-800">
+                        <div className="flex items-center justify-between text-white font-bold mb-1">
+                          <span>Day 3–4 · 1 对 1 真实业务场景试点</span>
+                          <span className="text-[10px] font-mono text-cyan-300">跑通 3 组真实闭环</span>
+                        </div>
+                        <p className="text-gray-300 leading-relaxed">
+                          手把手协助 Ying Lin（跑通 3 篇文案 + 短视频分镜）与 Becky（跑通 3 条 SOP 检索 + 家长关怀话术）。
+                        </p>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-black/40 border-l-4 border-l-emerald-400 border border-gray-800">
+                        <div className="flex items-center justify-between text-white font-bold mb-1">
+                          <span>Day 5 · 交付卡片与偏好记忆固化</span>
+                          <span className="text-[10px] font-mono text-emerald-300">常态化独立使用</span>
+                        </div>
+                        <p className="text-gray-300 leading-relaxed">
+                          发放《Hermes Agent 极简快捷指令一页纸卡片》，将 Leader 的修正反馈写入 Hindsight 记忆。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-gray-800 text-[11px] text-gray-400 flex items-center justify-between">
+                    <span>极简交付 · 无业务负担</span>
+                    <span className="text-emerald-400 font-bold">15-30 分钟即可上手</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* SLIDE 9: LIVE INTERACTIVE DECISIONS CHECKLIST                              */}
+          {/* ========================================================================= */}
+          {currentSlide === 9 && (
+            <div className="space-y-6">
+              <div className="border-b border-amber-500/20 pb-4 flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <span className="text-xs font-bold text-amber-400 tracking-wider uppercase">08 / DECISION & ACTIONS</span>
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">会议现场核心决策与行动审批清单</h2>
+                  <p className="text-sm text-gray-400 mt-1">现场逐项审议并勾选 · 达成共识即刻启动开工。</p>
+                </div>
+
+                <div className="flex items-center space-x-2 bg-black/40 px-4 py-2 rounded-2xl border border-amber-500/30">
+                  <span className="text-xs text-gray-400">已确认审批：</span>
+                  <span className="text-base font-extrabold text-amber-400 font-mono">
+                    {Object.values(checkedDecisions).filter(Boolean).length} / {DECISIONS_LIST.length}
+                  </span>
+                </div>
+              </div>
+
+              {/* Decision Cards List */}
+              <div className="space-y-3">
+                {DECISIONS_LIST.map((dec) => {
+                  const isChecked = !!checkedDecisions[dec.id];
+                  const isP0 = dec.urgency === 'P0 紧急阻塞';
+
+                  return (
+                    <div
+                      key={dec.id}
+                      onClick={() => toggleDecision(dec.id)}
+                      className={`p-4 sm:p-5 rounded-3xl transition-all cursor-pointer border flex items-start justify-between gap-4 ${
+                        isChecked
+                          ? 'bg-emerald-950/30 border-emerald-500/60 shadow-[0_0_20px_rgba(16,185,129,0.2)]'
+                          : isP0
+                          ? 'bg-red-950/20 border-red-500/50 hover:border-red-400'
+                          : 'glass-panel-gold border-amber-500/20 hover:border-amber-400/50'
+                      }`}
+                    >
+                      <div className="flex items-start space-x-4">
+                        <div className="mt-1 shrink-0 text-amber-400">
+                          {isChecked ? (
+                            <CheckSquare className="w-6 h-6 text-emerald-400 animate-bounce" />
+                          ) : (
+                            <Square className="w-6 h-6 text-gray-600 hover:text-amber-400 transition-colors" />
+                          )}
+                        </div>
+
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <span className="text-xs font-mono font-bold text-amber-400">{dec.num}</span>
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                              isP0 ? 'bg-red-500/20 text-red-400 border border-red-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                            }`}>
+                              {dec.urgency}
+                            </span>
+                            <span className="text-xs text-gray-500 font-mono">[{dec.category}]</span>
+                          </div>
+
+                          <h4 className={`text-base font-bold transition-colors ${isChecked ? 'text-emerald-300 line-through' : 'text-white'}`}>
+                            {dec.title}
+                          </h4>
+
+                          <p className="text-xs text-gray-300 mt-1 leading-relaxed">
+                            {dec.description}
+                          </p>
+
+                          <div className="mt-2 text-xs text-amber-200/90 font-medium flex items-center space-x-2">
+                            <span>👉 <strong>要求/产出</strong>：{dec.actionRequirement}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <span className="text-[11px] px-2.5 py-1 rounded-full bg-black/50 border border-gray-800 text-gray-300 font-mono block">
+                          {dec.cost}
+                        </span>
+                        <span className={`text-[11px] font-bold mt-2 block ${isChecked ? 'text-emerald-400' : 'text-gray-500'}`}>
+                          {isChecked ? '✓ 已批准' : '待确认'}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Footer Celebration Callout */}
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between text-xs text-amber-300">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4" />
+                  <span>全部 5 项决策达成共识后，系统即刻正式进入 W1 架构与采购落地期！</span>
+                </div>
+
+                <button
+                  onClick={() => {
+                    const all: Record<string, boolean> = {};
+                    DECISIONS_LIST.forEach(d => all[d.id] = true);
+                    setCheckedDecisions(all);
+                    confetti({
+                      particleCount: 150,
+                      spread: 90,
+                      origin: { y: 0.5 },
+                      colors: ['#D4AF37', '#F59E0B', '#10B981', '#FFFFFF']
+                    });
+                  }}
+                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs transition-all shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+                >
+                  一键全部批准 🎉
+                </button>
               </div>
             </div>
           )}
         </motion.div>
       </AnimatePresence>
+
+      {/* Slide Navigation Footer Bar */}
+      <div className="mt-8 pt-4 border-t border-gray-800/80 flex flex-wrap items-center justify-between text-xs text-gray-500 gap-4">
+        <div className="flex items-center space-x-4">
+          <span>快捷键：<kbd className="px-2 py-0.5 rounded bg-gray-900 border border-gray-800 text-gray-400 font-mono text-[10px]">←</kbd> <kbd className="px-2 py-0.5 rounded bg-gray-900 border border-gray-800 text-gray-400 font-mono text-[10px]">→</kbd> 翻页</span>
+          <span className="hidden sm:inline">|</span>
+          <span className="hidden sm:inline">空格键：<kbd className="px-2 py-0.5 rounded bg-gray-900 border border-gray-800 text-gray-400 font-mono text-[10px]">Space</kbd> 下一页</span>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <span className="text-gray-400">Top Scholar OS Presentation Deck</span>
+          <span className="text-amber-500/80">●</span>
+          <span className="text-amber-400/90 font-mono">2026-08-18 Edition</span>
+        </div>
+      </div>
     </div>
   );
 };

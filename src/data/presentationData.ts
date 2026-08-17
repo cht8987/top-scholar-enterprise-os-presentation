@@ -1,4 +1,4 @@
-export interface SlideData {
+export interface SlideMeta {
   id: number;
   title: string;
   subtitle: string;
@@ -6,453 +6,360 @@ export interface SlideData {
   badge?: string;
 }
 
-export interface DepartmentInfo {
+export const SLIDES_META: SlideMeta[] = [
+  { id: 1, title: 'AI Enterprise OS 落地与基础设施行动方案', subtitle: 'Top Scholar 教育集团 · 2026-08-18 核心决策共创会', category: 'EXECUTIVE', badge: '8/18 决策案' },
+  { id: 2, title: '双向闭环架构：以人为主的知识底座', subtitle: '为什么以 Obsidian 为真理源头，而非直接写入图数据库', category: 'ARCHITECTURE', badge: '双向闭环' },
+  { id: 3, title: 'TS-KNOWLEDGE 7 大业务分区与协同共创', subtitle: '统一知识框架 · 部门专属负责人 · 8/20-8/30 结构化迁移', category: 'ORGANIZATION', badge: '7大分区' },
+  { id: 4, title: '设备配置、网络方案与 P0 紧急阻塞', subtitle: 'iMac 管理员权限破局 · 本地开发+Tailscale vs 云端 VPS 选型', category: 'INFRASTRUCTURE', badge: 'P0 阻塞项' },
+  { id: 5, title: 'Rocket LMS 深度采购与 5 大权限角色体系', subtitle: '三大核心包功能拆解 · 5 大角色分权 · Regular 授权合法性判定', category: 'LMS PLATFORM', badge: '采购与授权' },
+  { id: 6, title: 'AI 订阅矩阵与 2026 最新前沿 API 资费', subtitle: '月度固定仅 $24 · DeepSeek V4 / Claude Opus 5 / Gemini 3.7 Flash 官方资费', category: 'AI STACK', badge: '极致性价比' },
+  { id: 7, title: 'Hermes Agent 部门杀手级业务赋能', subtitle: '从被动问答升级为主动业务哨兵 · 营销短视频/广告分析 · 客服学情与关怀', category: 'HERMES AGENT', badge: '主动哨兵' },
+  { id: 8, title: '企业大脑演进节奏与 1 周落地 Playbook', subtitle: '1 个月技术底座迭代 · 1 周 Telegram Bot 极简上线与实战培训', category: 'ROADMAP', badge: '1周落地' },
+  { id: 9, title: '会议现场核心决策与行动审批清单', subtitle: '5 大决策现场审议 · 达成共识即刻启动开工', category: 'DECISION', badge: '现场拍板' }
+];
+
+export interface DepartmentItem {
   id: string;
+  num: string;
   name: string;
-  icon: string;
   owner: string;
-  color: string;
-  description: string;
-  keyFiles: string[];
-  assistantRole: string;
-  benefits: string[];
-}
-
-export interface RoadmapPhase {
-  phase: string;
-  name: string;
-  timeline: string;
-  teamSize: string;
-  servers: string;
-  budget: string;
-  assistants: string[];
-  keyGoals: string[];
-  highlight: string;
-}
-
-export interface FaqItem {
-  question: string;
-  answer: string;
-  tag: string;
-}
-
-export interface AiMemoryComponentInfo {
-  name: string;
-  techName: string;
-  layerName: string;
-  metaphor: string;
+  roleDescription: string;
+  focusFiles: string[];
   color: string;
   icon: string;
-  role: string;
-  techDetails: string;
-  whyNeeded: string;
-  deployment: string;
-  keyFeatures: string[];
+  killerFeature: string;
 }
 
-export const COMPANY_OS_TWIN_PILLAR_TREE = `                    COMPANY OS (TS 企业操作系统)
-                        │
-            ┌───────────┴───────────┐
-            │                       │
-       OBSIDIAN VAULT           BUSINESS DB (LMS 系统统一入口)
-            │                       │
-     【Knowledge Layer】      【Business Data Layer】
-       SOP / Playbook          Student Data (学员数据)
-       Policies (公司政策)     Subscription (课程订阅)
-       Experience (经验)       Attendance (出勤记录)
-       Training (培训)         Scores (成绩表现)
-       Decisions (决策)        Payment (缴费记录)
-       Prices (唯一价格)       Classes (班级分组)
-            │                  Customer Data (家长画像)
-            │                  ★ Coach / Teacher / Student 绑定
-            │                       │
-            │ (SOP 知识喂入)        │ (考勤/成绩/订阅 实时喂入)
-            └───────────┬───────────┘
-                        │
-                        ▼
-                 AI MEMORY 记忆层
-     ┌─────────────────────────────────────┐
-     │ 1. FalkorDB (图数据库底座)          │
-     │    • 存储 Coach/Teacher/Student 节点 │
-     │ 2. Graphiti (时空记忆引擎)          │
-     │    • 给考勤打卡与成绩演进打时间戳    │
-     │ 3. Hindsight (反思质检官)           │
-     │    • 评估回答有效性，记录人工纠错    │
-     └──────────────────┬──────────────────┘
-                        │
-                        ▼
-     【全员 AI 岗位分身】 营销 / 销售 / 客服 / 教务 / IT / 高管`;
-
-export const BUSINESS_DB_HIGHLIGHTS = [
-  {
-    title: 'LMS 系统的核心入口与数据库心脏',
-    description: '所有的教练 (Coach)、老师 (Teacher) 与学生 (Student) 的全流程业务数据，全部下沉绑定在 Business DB 中统一管理。',
-    icon: 'Database'
-  },
-  {
-    title: '全方位学员生命周期资产 (Student Data)',
-    description: '管理学员档案、家长信息 (Customer Data)、课程订阅 (Subscription)、班级分组 (Classes) 与历史学费记录 (Payment)。',
-    icon: 'Users'
-  },
-  {
-    title: '实时喂入 AI MEMORY 层 (Attendance & Scores)',
-    description: '学生打卡出勤 (Attendance) 与作业成绩 (Scores) 实时注入 FalkorDB 与 Graphiti，赋予记忆精确时间戳演进。',
-    icon: 'TrendingUp'
-  },
-  {
-    title: 'AI 智脑双源驱动闭环',
-    description: 'Obsidian Vault 喂入“规章与价格”，Business DB 喂入“实效考勤与成绩”。AI 助手双向联查，生成零失误答复。',
-    icon: 'Cpu'
-  }
-];
-
-export const AI_MEMORY_TRIO: AiMemoryComponentInfo[] = [
-  {
-    name: 'FalkorDB 图底座',
-    techName: 'FalkorDB',
-    layerName: '1. 数据存储图底座 (Data Graph Engine)',
-    metaphor: '“数字大脑的图谱硬盘与搜索引擎底座”',
-    color: 'from-blue-600 to-indigo-700',
-    icon: 'Database',
-    role: '高性能图数据库底座，负责毫秒级持久化存储节点与关系网络。',
-    techDetails: '基于 Redis 内核的高性能图数据库，支持 Cypher 结构化查询与 Vector 混合向量相似度检索。同时接收 Obsidian SOP 节点与 Business DB 中的 Coach/Teacher/Student 实体数据。',
-    whyNeeded: '普通关系型 SQL 或单纯向量库无法高效表达复杂的“产品-价格-SOP-学员考勤”多维网状关联，FalkorDB 提供了毫秒级的关联查询性能。',
-    deployment: 'Docker Compose 容器部署 (独立 6379 端口，4GB 内存配额)。',
-    keyFeatures: [
-      'Redis 高速内核，查询延迟 < 5 毫秒',
-      '原生支持 Cypher 标准图查询语言',
-      '图结构 + 向量 Embedding 混合索引',
-      '接收 Business DB 考勤成绩节点与 Obsidian SOP'
-    ]
-  },
-  {
-    name: 'Graphiti 时空引擎',
-    techName: 'Graphiti',
-    layerName: '2. 记忆与逻辑时空层 (Temporal Memory Middleware)',
-    metaphor: '“带时间线的智能图书管理员 / 记忆时空引擎”',
-    color: 'from-emerald-600 to-teal-700',
-    icon: 'Clock',
-    role: '时序图谱写入引擎，为所有知识、聊天事件与 LMS DB 考勤成绩自动打上时间戳 (Timestamp)。',
-    techDetails: '利用大语言模型 (LLM) 增量提取对话与 Business DB 中的打卡/分数演进关系，提供 insert() 与 search() 高级记忆 API。',
-    whyNeeded: '教育业务天然是时序演进的（学员“6个月前的成绩” vs “现在的表现” vs “未来的预警”）。Graphiti 接收 Business DB 实时流，追踪时间线的历史变迁。',
-    deployment: 'Docker Compose 中间件，自动监听 Obsidian Git 变更与 Business DB 考勤成绩事件。',
-    keyFeatures: [
-      '自动接收 Business DB 打卡成绩事件',
-      '节点赋予精确时间戳 (Temporal Nodes)',
-      '版本历史追踪，防止“知识腐烂”',
-      '支持“学员成长轨迹”的精准时空检索'
-    ]
-  },
-  {
-    name: 'Hindsight 反思质检官',
-    techName: 'Hindsight',
-    layerName: '3. 监控与反思质检层 (Reflection & Agent Long-Term Memory)',
-    metaphor: '“AI 决策复盘审计员 / 经验提炼质检官”',
-    color: 'from-purple-600 to-pink-700',
-    icon: 'Brain',
-    role: 'Agent 长期记忆评估与自我纠错引擎，记录优秀答复、LMS 风险事件与用户纠正。',
-    techDetails: '管理 Memory Nodes (经验/观察/事实)，提供 retain() / recall() 访问接口，并对记忆提供置信度评分 (Confidence Score)。',
-    whyNeeded: '底座数据库可能误存噪音或误判。Hindsight 充当“记忆提炼官”，评估记忆有效性，记录人类纠正，确保被纠正的错误绝对不重犯。',
-    deployment: '复用现有 i7 服务器私有实例 (通过 SSH 隧道直连 top-scholar Bank)。',
-    keyFeatures: [
-      'Memory NodeSchema (包含置信度与 TTL)',
-      '用户纠正 100% retain 永久记忆',
-      '结合 LMS 学情评估回答有效性',
-      '跨 Agent 共享公司最高决策记忆'
-    ]
-  }
-];
-
-export const DEPARTMENTS: DepartmentInfo[] = [
+export const DEPARTMENTS_DATA: DepartmentItem[] = [
   {
     id: '00-company',
-    name: '00 公司级核心 (Company Core)',
+    num: '00',
+    name: 'COMPANY (公司总览)',
+    owner: 'Aaron / Elson',
+    roleDescription: '组织架构、核心价值观、全员通告、经营战略总览',
+    focusFiles: ['ORG-CULTURE-AND-VALUES.md', 'COMPANY-OS-INDEX.md'],
+    color: '#E5C07B',
     icon: 'Building2',
-    owner: 'Alex / Aaron / 全员',
-    color: 'from-blue-500 to-indigo-600',
-    description: '全员只读权威真相源，定义公司核心价值、品牌标准口径与合规红线。',
-    keyFiles: ['价值观与六戒行为准则.md', '品牌口径唯一版本.md', '荣誉与媒体资产.md', '组织架构与职责.md'],
-    assistantRole: '答复公司通用制度、品牌口径与合规红线查询',
-    benefits: ['统一全员对外对外口径', '杜绝品牌宣传夸大', '新员工快速融入文化']
+    killerFeature: '全员共识对齐，统一企业文化与行为准则'
   },
   {
     id: '01-product',
-    name: '01 产品与价格 (Product & Prices)',
+    num: '01',
+    name: 'PRODUCT (产品与课程)',
+    owner: '产品 / 教务主管',
+    roleDescription: '6 大产品线详情、标准化定价表、课程周期、交付物标准',
+    focusFiles: ['PRODUCT-CATALOG-PRICING.md', 'CLASS-SCHEDULE.md'],
+    color: '#F59E0B',
     icon: 'Tag',
-    owner: 'Alex / Aaron / ES',
-    color: 'from-emerald-500 to-teal-600',
-    description: '★ 全公司唯一的权威价格与课程标准真相源，杜绝口径不一致与赔付风险。',
-    keyFiles: ['价格表唯一权威版.md', '国英特训班规范.md', '状元班标准.md', '付费方式与分期.md'],
-    assistantRole: '3 秒内提供最新精准课程参数、课表与价格信息',
-    benefits: ['报价 100% 准确', '消除人工算错退款风险', '产品课表随时同步更新']
+    killerFeature: '单点维护全公司课程唯一价格与标准课表'
   },
   {
     id: '02-marketing',
-    name: '02 营销中枢 (Marketing Hub)',
+    num: '02',
+    name: 'MARKETING (营销与流量)',
+    owner: 'Ying Lin',
+    roleDescription: '广告投放 SOP、文案库、UTM 规范、活动复盘、渠道转化数据',
+    focusFiles: ['ADS-OPERATING-SOP.md', 'UTM-STANDARD-V1.md'],
+    color: '#EC4899',
     icon: 'Megaphone',
-    owner: 'Ying Lin / Elson',
-    color: 'from-purple-500 to-pink-600',
-    description: '爆款广告文案库 (Winning Ads) 与多渠道招生 SOP 运营基地。',
-    keyFiles: ['招生SOP-Meta广告.md', '文案爆款方法论(4U).md', '品牌禁用词红线.md', 'Winning Ads 案例库.md'],
-    assistantRole: '自动搜集爆款文案、生成广告草稿、排查禁用词',
-    benefits: ['文案产出速度提升 5 倍', '自动避开违禁词', '高效复用历史 Winning Ads']
+    killerFeature: '广告自动诊断哨兵 + 30秒短视频黄金分镜生成'
   },
   {
     id: '03-sales',
-    name: '03 销售中枢 (Sales Hub)',
+    num: '03',
+    name: 'SALES (销售与转化)',
+    owner: 'Becky / Sales Lead',
+    roleDescription: '销售攻防话术、线索跟进 SOP、报价策略、成单/丢单案例复盘',
+    focusFiles: ['SALES-PLAYBOOK.md', 'OBJECTION-HANDLING.md'],
+    color: '#10B981',
     icon: 'TrendingUp',
-    owner: 'Sales Lead / Elson',
-    color: 'from-amber-500 to-orange-600',
-    description: '家长 FAQ 常见问答库、6 大类关单异议破解。联查 Business DB 中的订阅与缴费状态。',
-    keyFiles: ['家长常见疑问FAQ-5类.md', '异议处理6类破解.md', 'Booking Call 6步走.md', '成交案例库.md'],
-    assistantRole: '结合 Business DB (LMS DB) 订阅记录，实时提示关单话术、生成专属报价单',
-    benefits: ['降低新销售培养周期', '回答异议流畅准确', '显著提升闭单转化率']
+    killerFeature: '高情商破冰话术秒级生成 + 丢单线索二次激活'
   },
   {
     id: '04-cs',
-    name: '04 客户成功 (Customer Success)',
+    num: '04',
+    name: 'CUSTOMER SUCCESS (售后CS)',
+    owner: 'Becky',
+    roleDescription: '课后督导、退费/延期标准处理、家长满意度、续费跟进 SOP',
+    focusFiles: ['AFTER-SALES-SOP.md', 'REFUND-POLICY.md'],
+    color: '#06B6D4',
     icon: 'Users',
-    owner: 'CS Lead / Elson',
-    color: 'from-cyan-500 to-blue-600',
-    description: '学员报名后流程、基于 Business DB 考勤成绩的红黄绿灯预警标准与关怀 SOP。',
-    keyFiles: ['报名后三步走SOP.md', '学员红黄绿灯判定标准.md', '续费与升单SOP.md', '家长关怀模板库.md'],
-    assistantRole: '分析从 Business DB 喂入的打卡成绩，判定红黄绿灯、拟定家长关怀草稿',
-    benefits: ['流失风险提前预警', '家长关怀效率翻倍', '学员续费率稳步上升']
+    killerFeature: '缺勤/未交作业关怀雷达 + 一键家长学情喜报'
   },
   {
     id: '05-academic',
-    name: '05 教务中枢 (Academic Hub)',
+    num: '05',
+    name: 'ACADEMIC (教务与教研)',
+    owner: '教务主管',
+    roleDescription: '教师排课、作业批改标准、教案大纲、教学质量监控指标',
+    focusFiles: ['TEACHER-GUIDE.md', 'GRADING-STANDARDS.md'],
+    color: '#8B5CF6',
     icon: 'GraduationCap',
-    owner: 'Academic Lead',
-    color: 'from-violet-500 to-purple-600',
-    description: 'SEE 教学理念、A+ 五环系统、Coach/Teacher 教学管理、作业批改标准。',
-    keyFiles: ['作业批改标准.md', 'SEE 教学理念与A+五环.md', '课表与分组规则.md', '教材与Workbook索引.md'],
-    assistantRole: '调取喂入 AI Memory 的 Coach/Teacher 教学记录，推荐个性化评语与课件',
-    benefits: ['教学批改标准统一', '教材检索零秒等待', '提升学员学习体验']
+    killerFeature: '班级共性错题智能归纳 + 下堂课巩固讲义生成'
   },
   {
-    id: '06-operations',
-    name: '06 运营与 IT (Operations & IT)',
+    id: '06-operations-it',
+    num: '06',
+    name: 'OPERATIONS & IT (运营运维)',
+    owner: 'Elson',
+    roleDescription: '权限矩阵、API 文档、自动化工作流 (n8n)、网络与数据运维',
+    focusFiles: ['TECH-STACK-SPEC.md', 'N8N-BLUEPRINTS.md'],
+    color: '#6366F1',
     icon: 'Server',
-    owner: 'Elson (IT Lead)',
-    color: 'from-slate-500 to-zinc-600',
-    description: '系统账号管理、Business DB 管道维护、Zoom 链接自动分发与故障排除。',
-    keyFiles: ['系统清单与权限申请.md', 'Zoom链接发放规则.md', '故障排查手册.md', '系统运维Runbook.md'],
-    assistantRole: '引导员工自助解决软件故障、维护 Business DB 到 AI Memory 的管道',
-    benefits: ['减少 80%IT 重复报修', '系统发号零延误', '故障快速应急恢复']
+    killerFeature: '多 Agent 路由中枢 + 图数据库时序数据同步'
   }
 ];
 
-export const ROADMAP_PHASES: RoadmapPhase[] = [
+export interface LmsBundleItem {
+  id: string;
+  name: string;
+  itemCode: string;
+  type: string;
+  keyFeatures: string[];
+  techStack: string;
+  businessImpact: string;
+}
+
+export const LMS_BUNDLES: LmsBundleItem[] = [
   {
-    phase: 'Phase 1',
-    name: '初创启航期',
-    timeline: 'Week 1 - 8 (前2个月)',
-    teamSize: '6 - 10 人',
-    servers: '1 台基础服务器 (NAS / 入门 VPS)',
-    budget: 'RM 150 - 300 / 月 (一键协同每人仅 RM 18/月)',
-    assistants: ['营销 AI 助手', '运营与 IT AI 助手'],
-    keyGoals: [
-      '完成 Obsidian Vault 架构搭建与 5 份核心 SOP 迁移',
-      '搭建 Business DB (LMS 入口) 到 FalkorDB 的图节点转换 Pipeline',
-      '部署 FalkorDB 容器与基础图节点索引',
-      '复用 Hindsight 私有实例连接经验 Bank'
+    id: 'web-core',
+    name: 'Rocket LMS Web Core',
+    itemCode: 'CodeCanyon 33120735',
+    type: '主系统内核',
+    techStack: 'Laravel 9+ / PHP 8.1+ / MySQL / Bootstrap 5 / REST API',
+    keyFeatures: [
+      '课程与章节体系 (Chapters, Sessions, Prerequisites 先修课)',
+      'Drip Content 防刷课机制 (按周/按天定时解锁课件)',
+      'Zoom 原生 S2S OAuth 深度集成 (自动排课建会、课后回放挂载)',
+      'Quiz 在线题库系统 (单选/多选/图文题/限时答题/自动判分)',
+      'HTML5 Canvas 动态证书设计器 (自动生成防伪 QR Code)',
+      '积分与勋章激励系统 (Badges, Points, 学员排行榜)'
     ],
-    highlight: '双源喂入：Obsidian SOP + Business DB 转换 Pipeline 正式建起。'
+    businessImpact: '替代老旧 Moodle，提供极简现代 Web 交付与无感 Zoom 直播对接。'
   },
   {
-    phase: 'Phase 2',
-    name: '快速拓展期',
-    timeline: 'Week 9 - 52 (第3-12个月)',
-    teamSize: '15 - 22 人',
-    servers: '2 - 3 台高配服务器',
-    budget: 'RM 300 - 600 / 月',
-    assistants: ['销售 AI 助手', '客户成功 (CS) AI 助手'],
-    keyGoals: [
-      'Business DB 中的打卡考勤与成绩演进实时通过 Graphiti 打时间戳喂入',
-      '客服 AI 助手基于喂入数据上线红黄绿灯学员风险预警',
-      '销售 AI 助手联动 LMS 订阅记录输出续费简报',
-      '每个部门沉淀 50+ 篇核心资产文档'
+    id: 'plugins-bundle',
+    name: 'Universal Plugins Bundle',
+    itemCode: 'CodeCanyon 33297004',
+    type: '40+ 插件全家桶',
+    techStack: 'Modular Laravel Addons (支持后续所有新插件免费升级)',
+    keyFeatures: [
+      'Assignments 作业批改系统 (学生上传文件，老师后台评分评语与退回)',
+      'Course Forum & In-App Live Chat (课程专属论坛 + 助教一对一私信)',
+      'Course Bundles (支持将多门课打包为组合套餐一键批量授权)',
+      'Offline Bank Payments (家长上传 Bank Slip 凭证，财务一键审核开通)',
+      'Meeting Booking (讲师日历预约，自动同步 Google Calendar 生成 Zoom 链接)',
+      'Reward Points Club & Affiliate (积分商城兑换 + 老带新裂变分销)',
+      'Twilio SMS OTP 验证 + 全站 Noticeboard 定向弹窗公告'
     ],
-    highlight: 'Business DB 考勤成绩实时打时间戳喂入 AI Memory。'
+    businessImpact: '开箱即用补齐作业批改、社群互动、银行转账与分销，省去数万美元自研成本。'
   },
   {
-    phase: 'Phase 3',
-    name: '成熟协同期',
-    timeline: 'Year 2 - 3 (第2-3年)',
-    teamSize: '25 - 35 人',
-    servers: '3 - 5 台云端集群 / 私有云',
-    budget: 'RM 3,300 - 5,000 / 月',
-    assistants: ['6 大部门 AI 助手全线上线', '高管 Executive Dashboard AI'],
-    keyGoals: [
-      '统一 student_id 贯穿 LMS DB、AI Memory 与高管看板',
-      '教务 AI 助手上线，辅助 Coach/Teacher 批改评语',
-      '高管仪表盘上线，实时呈现大盘 ROI 与续费趋势',
-      '跨部门数据无缝实时流转'
+    id: 'mobile-app',
+    name: 'Rocket LMS Mobile App',
+    itemCode: 'CodeCanyon 36329581',
+    type: 'Flutter 双端原生 App',
+    techStack: 'Flutter (Dart) 跨平台源码 · iOS (App Store) + Android (Google Play)',
+    keyFeatures: [
+      '离线下载与缓存 (WiFi 环境一键离线视频与课件，无网也能看)',
+      '移动端 Zoom 直播直接唤起 (手机沉浸式参与线上课堂)',
+      'Firebase Cloud Messaging 智能 Push (开课前15分钟弹窗提醒，拉升到课率)',
+      '手机端 Quiz 刷题与拍照交作业 (手机拍照直接上传手写作业)',
+      '多语言无缝切换 (中文简繁 / 英文 / 马来文 BM)',
+      '完全品牌去第三方化 (替换 Top Scholar VI、Logo 与开屏动画)'
     ],
-    highlight: '以 student_id 贯穿全大盘，全员 AI 深度协同。'
-  },
-  {
-    phase: 'Phase 4',
-    name: 'AI 原生运营期',
-    timeline: 'Year 4+ (第4年及以后)',
-    teamSize: '35 - 55 人',
-    servers: '云原生弹性集群 (AWS/GCP/Azure)',
-    budget: 'RM 8,000 - 15,000 / 月',
-    assistants: ['AI 预测与决策引擎', '全流程智能辅助阵列'],
-    keyGoals: [
-      '结合 AI Memory 中保存的历史 LMS 考勤成绩轨迹提前 30 天预测退费风险',
-      '智能预测下季度招生与续费量',
-      '人类监督 + AI 智能建议闭环',
-      '成为行业领先的 AI 原生教育企业'
-    ],
-    highlight: 'AI 预判走势，人类掌控决策，保持极致人情味与效率。'
+    businessImpact: '专属独立品牌 App，极大提升家长信任感与到课率，学员体验质的飞跃。'
   }
 ];
 
-export const FAQS: FaqItem[] = [
+export interface RoleArchitectureItem {
+  name: string;
+  level: string;
+  tag: string;
+  scope: string;
+  permissions: string[];
+  topScholarScenario: string;
+}
+
+export const ROLES_ARCHITECTURE: RoleArchitectureItem[] = [
   {
-    question: 'Business DB (LMS DB) 是如何喂给 AI Memory 的？',
-    answer: 'Business DB 中的 Coach、Teacher、Student、考勤 (Attendance)、成绩 (Scores)、订阅 (Subscription) 数据通过自动管道进行双重喂入：一方面在 FalkorDB 中转化为图节点网状结构；另一方面通过 Graphiti 实时打上时间戳 (Timestamp) 存入记忆，让 AI 记忆能够追溯学员从入营到提升的成长轨迹。',
-    tag: 'Business DB 喂入'
+    name: '1. Super Admin (超级管理员)',
+    level: '最高系统级',
+    tag: '👑 全局控制',
+    scope: '系统技术底座、域名、Zoom OAuth 凭证、SMS/邮件通道、全站财务对账',
+    permissions: ['全局系统配置', '支付网关与对账', '自定义 Staff 菜单权限', '全平台总报表监控'],
+    topScholarScenario: 'Elson 与公司高层使用，掌控全平台安全与基础设施底层。'
   },
   {
-    question: '什么是 Business DB？它和 LMS 系统是什么关系？',
-    answer: 'Business DB 是 Top Scholar LMS (学习管理系统) 的统一数据库心脏与唯一入口！所有的教练 (Coach)、老师 (Teacher) 和学生 (Student) 的全流程业务数据（出勤 Attendance、成绩 Scores、订阅 Subscription、班级 Classes、缴费 Payment）全部绑定在 Business DB 中统一管理。',
-    tag: 'Business DB / LMS'
+    name: '2. Staff (内部员工 / 教务 / 助教)',
+    level: '运营协同级',
+    tag: '💼 细粒度分权',
+    scope: '日常教务运营、排课、助教批改查看、回复工单，无法接触系统底层与支付配置',
+    permissions: ['教务排课与班级管理', '助教答疑与工单回复', '教材课件上传', '受限数据查看'],
+    topScholarScenario: '按岗位分配指定菜单（如教务专员只排课，助教只看作业与答疑）。'
   },
   {
-    question: 'Company OS 的“双柱架构”是如何运作的？',
-    answer: 'Company OS 由【柱1：Obsidian Vault】与【柱2：Business DB】双柱驱动。Obsidian 负责存 SOP、价格表和政策（回答“怎么做”）；Business DB 负责存 LMS 中的 Coach/Teacher/Student 真实考勤与成绩（回答“谁在学、进度如何”）。两者双双喂入 AI 大脑，实现全流程智能解答与预警。',
-    tag: '双柱架构'
+    name: '3. Organization (机构 / 分校 / 事业部)',
+    level: '多租户二级管理 ⭐',
+    tag: '🏢 虚拟分校',
+    scope: '拥有独立的专属讲师与专属学员群体，可独立对内排课、批量报名与查看独立营收',
+    permissions: ['管理本机构专属老师', '管理本机构专属学生', '开办机构专属课程', '独立结算与完课报表'],
+    topScholarScenario: '支持按「小学部 / 中学部 / 特训营」数据隔离，或作为未来 B2B 合作分校入驻平台！'
   },
   {
-    question: '为什么 AI Memory 必须由 FalkorDB、Graphiti 和 Hindsight 三者组合？',
-    answer: '三者在不同层级各司其职：FalkorDB 是基础图数据库底座（负责存取节点与极速查询）；Graphiti 是中间件（用大模型提取实体并为记忆赋予时间戳，解决知识过时问题）；Hindsight 是高阶质检与复盘（记录成功经验与人工纠错，确保错误不重犯）。三者缺一不可。',
-    tag: 'AI Memory 技术'
+    name: '4. Instructor (主讲讲师)',
+    level: '教学交付级',
+    tag: '👨‍🏫 教学中心',
+    scope: '录播课程创作、Zoom 直播排课、创建题库、批阅学员作业、处理 1 对 1 答疑预约',
+    permissions: ['创建章节与课件', '配置 Drip 防刷课规则', '批改 Assignments 作业', '管理课程论坛答疑'],
+    topScholarScenario: '名师与签约讲师专属教学工作台，聚焦课程交付与作业互动。'
   },
   {
-    question: '数据保存在哪里？公司的核心价格和 LMS 客户资料会泄露吗？',
-    answer: '绝对安全！我们坚守「数据主权在公司手心里」原则。Obsidian Vault、Business DB (LMS DB) 与 FalkorDB 全部运行在公司私有服务器，数据经过加密，绝对不会被第三方平台拿去训练公开大模型。',
-    tag: '数据安全'
+    name: '5. Student (学员 / 家长端)',
+    level: '终端学习级',
+    tag: '🎓 学习体验',
+    scope: '观看课程回放、离线下载、手机一键进 Zoom、完成 Quiz 测验、手机拍照上传作业、拿证书',
+    permissions: ['点播回放与倍速播放', '离线视频缓存', '提交测验与作业', '获取防伪 QR 证书'],
+    topScholarScenario: '8,000+ 学员与家长日常学习的主阵地，享受流畅双端体验。'
   }
 ];
 
-export const FULL_VAULT_TREE = `TS-KNOWLEDGE/
-│
-├── 00-COMPANY/                     # 全员可读 —— 公司级真相源
-│   ├── 价值观与行为准则.md           # 六戒原文 + 红线对照
-│   ├── 创办人与团队.md
-│   ├── 品牌口径.md                   # ★ 学生数、荣誉、slogan 唯一版本
-│   ├── 荣誉与媒体资产.md
-│   └── 组织架构与职责.md
-│
-├── 01-PRODUCT/                     # 全员可读 —— ★ 单一价格真相
-│   ├── 产品线总览.md
-│   ├── 国英挑战课.md
-│   ├── 国英特训.md                  # 含课表、8大特点、期数定义
-│   ├── Premium小组特训.md
-│   ├── 状元班.md
-│   ├── A-LEADER假期营.md
-│   ├── 书籍与教材.md
-│   ├── 价格表.md                    # ★★ 唯一权威版本
-│   └── 付费方式与分期.md
-│
-├── 02-MARKETING/                   # 营销团队专用
-│   ├── SOP/
-│   │   ├── 招生SOP-Meta广告.md
-│   │   ├── 招生SOP-社媒.md
-│   │   ├── 招生SOP-Telegram.md
-│   │   └── 招生SOP-Email.md
-│   ├── PLAYBOOK/
-│   │   ├── 文案方法论.md            # 4U · 七宗罪 · 标准框架 · CTA
-│   │   └── 品牌调性与禁用词.md      # ★ 反夸大红线
-│   ├── KNOWLEDGE/
-│   │   ├── winning-ads/            # 每条 winning ad 一个文件 + 表现数据
-│   │   └── 内容选题库/
-│   ├── 00-WORKSPACE/
-│   │   ├── INBOX/                  # 待处理 brief、竞品信息
-│   │   ├── DRAFTS/                 # 文案草稿（待审核）
-│   │   └── SUBMISSIONS/            # 已提交内容
-│   └── CASES/
-│       └── 竞品分析报告/
-│
-├── 03-SALES/                       # 销售团队专用
-│   ├── SOP/
-│   │   ├── 大型活动5阶段节奏.md
-│   │   ├── Booking-Call-6步SOP.md
-│   │   ├── Follow-Up-7日流程.md
-│   │   └── Closing流程.md
-│   ├── PLAYBOOK/
-│   │   ├── 家长FAQ-5类.md
-│   │   └── 异议处理-6类.md
-│   ├── KNOWLEDGE/
-│   │   └── 成交案例库/
-│   ├── 00-WORKSPACE/
-│   │   ├── INBOX/
-│   │   └── DRAFTS/
-│   └── RESOURCES/
-│
-├── 04-CUSTOMER-SUCCESS/            # 客户成功团队专用
-│   ├── SOP/
-│   │   ├── Enrollment-System.md
-│   │   ├── 报名后SOP-三个Box.md
-│   │   ├── Student-Success-Journey.md
-│   │   └── CS黄金原则.md
-│   ├── PLAYBOOK/
-│   │   ├── 红黄绿灯SOP.md           # ★ 未来由系统自动判定
-│   │   └── 续费与升单SOP.md
-│   ├── KNOWLEDGE/
-│   │   ├── 家长关怀模板库/
-│   │   └── 客户疑问-视频教学清单.md
-│   ├── CUSTOMER-CONTEXT/           # 客户画像与偏好
-│   └── CASES/
-│
-├── 05-ACADEMIC/                    # 教务团队专用
-│   ├── SOP/
-│   │   ├── 批改标准.md
-│   │   └── 教材使用指南.md
-│   ├── PLAYBOOK/
-│   │   ├── 教学理念-SEE.md
-│   │   └── A+五环系统.md
-│   ├── KNOWLEDGE/
-│   │   ├── 课表与分组规则.md
-│   │   └── 教材与workbook索引.md
-│   ├── CURRICULUM/
-│   └── CASES/
-│
-├── 06-OPERATIONS-IT/              # IT/运营团队专用（Elson 主场）
-│   ├── SOP/
-│   │   ├── 开号与enrol流程.md
-│   │   ├── Zoom链接发放规则.md
-│   │   └── 故障排查手册.md
-│   ├── PLAYBOOK/
-│   │   └── 系统运维手册.md
-│   ├── KNOWLEDGE/
-│   │   ├── 系统清单与账号.md        # 不含密码
-│   │   ├── 数据字典.md
-│   │   └── 权限申请流程.md
-│   ├── IT/
-│   │   ├── Docker部署指南.md
-│   │   ├── n8n工作流文档.md
-│   │   └── 备份与恢复runbook.md
-│   └── 00-WORKSPACE/
-│       ├── INBOX/
-│       └── DRAFTS/
-│
-├── 90-RESOURCES/                   # 公共资源
-│   ├── Templates/                  # 模板库
-│   ├── References/                 # 参考文档
-│   └── External-Docs/              # 外部文档
-│
-├── 99-META/                        # 元数据与治理
-│   ├── Taxonomy.md                 # 标签体系
-│   ├── Glossary.md                 # 术语表
-│   ├── Pending-Verification.md     # ★ 待核实清单（所有 ❓ 集中在这里）
-│   ├── Knowledge-Health.md         # 知识库健康度报告
-│   └── Changelog.md                # 更新日志
-│
-└── _SYSTEM/                        # 系统层（不入检索库）
-    ├── Inbox/                      # 全局输入暂存
-    ├── Processing/                 # 处理中
-    └── Output/                     # 待审核输出`;
+export interface ApiRateItem {
+  model: string;
+  provider: string;
+  inputPrice: string;
+  outputPrice: string;
+  cachePrice: string;
+  roleInHermes: string;
+  highlight: string;
+}
+
+export const API_RATES_DATA: ApiRateItem[] = [
+  {
+    model: 'DeepSeek-V4-Flash',
+    provider: 'DeepSeek 官方 API',
+    inputPrice: '$0.22 (非高峰) / $0.44 (高峰)',
+    outputPrice: '$0.66 (非高峰) / $1.32 (高峰)',
+    cachePrice: '$0.007 ~ $0.014 (命中)',
+    roleInHermes: '⭐ 主力底座：日常海量文本清洗、意图识别、路由分发',
+    highlight: '非高峰期享 50% 离峰优惠，充值 $20 极度耐用，支持 1M 超大上下文'
+  },
+  {
+    model: 'DeepSeek-V4-Pro',
+    provider: 'DeepSeek 官方 API',
+    inputPrice: '$0.66 (非高峰) / $1.32 (高峰)',
+    outputPrice: '$1.98 (非高峰) / $3.96 (高峰)',
+    cachePrice: '$0.022 ~ $0.044 (命中)',
+    roleInHermes: '深度推理：复杂数学与规则校验、SOP 逻辑自洽推演',
+    highlight: '强推理模式，Token 按 Output 计费，非高峰期同样半价'
+  },
+  {
+    model: 'Claude Opus 5',
+    provider: 'Anthropic 官方 API',
+    inputPrice: '$5.00 / 1M tokens',
+    outputPrice: '$25.00 / 1M tokens',
+    cachePrice: '$0.50 (Cache Read)',
+    roleInHermes: '👑 战略大脑：复杂架构设计、代码深度重构、高层战略报告',
+    highlight: '业界顶级智商模型，高价值决策首选'
+  },
+  {
+    model: 'Claude Sonnet 5',
+    provider: 'Anthropic 官方 API',
+    inputPrice: '$2.00 / 1M tokens',
+    outputPrice: '$10.00 / 1M tokens',
+    cachePrice: '$0.20 (Cache Read)',
+    roleInHermes: '🛠️ 主力工程：系统开发、自动化脚本编写、复杂 Agent 工具链',
+    highlight: '相比前代大幅降价，速度与推理能力极致均衡'
+  },
+  {
+    model: 'Claude Haiku 4.5',
+    provider: 'Anthropic 官方 API',
+    inputPrice: '$1.00 / 1M tokens',
+    outputPrice: '$5.00 / 1M tokens',
+    cachePrice: '$0.10 (Cache Read)',
+    roleInHermes: '轻量响应：客服工单初筛、极速摘要、高并发分类',
+    highlight: '毫秒级极速响应，极低成本'
+  },
+  {
+    model: 'Gemini 3.7 Flash',
+    provider: 'Google Cloud / AI Studio',
+    inputPrice: '$0.75 / 1M tokens (首发优惠)',
+    outputPrice: '$3.75 / 1M tokens (首发优惠)',
+    cachePrice: '$0.075 (Context Cache)',
+    roleInHermes: '⚡ 极速多模态：整本 PDF 教材瞬间总结、视频图文长文本分析',
+    highlight: '支持 Batch 批处理再减 50%，多模态长文本之王'
+  },
+  {
+    model: 'Muse Spark (Meta API)',
+    provider: 'Meta Model API',
+    inputPrice: '$1.25 (标准) / $0.10 (贡献者)',
+    outputPrice: '$4.25 (标准) / $0.20 (贡献者)',
+    cachePrice: '$0.002 ~ $0.15 (命中)',
+    roleInHermes: '🎯 营销创意：FB 广告标题 A/B 测试、多矩阵社媒文案批量生成',
+    highlight: '新账号赠送 $20 免费额度，绑定 Meta 公司卡'
+  }
+];
+
+export interface DecisionItem {
+  id: string;
+  num: string;
+  title: string;
+  category: string;
+  urgency: 'P0 紧急阻塞' | 'P1 核心决策' | 'P2 推进共识';
+  description: string;
+  actionRequirement: string;
+  cost: string;
+}
+
+export const DECISIONS_LIST: DecisionItem[] = [
+  {
+    id: 'dec-1',
+    num: '决策 01',
+    title: '知识库各部门对接人与共创会排期',
+    category: '组织协同',
+    urgency: 'P1 核心决策',
+    description: '确认 00~06 对应板块负责人（营销 Ying Lin、销售与 CS Becky 等），排期 30min 共创会。',
+    actionRequirement: '确立 8/20–8/30 现有 PDF/PPT SOP 结构化导入与 UTM v1 发布节奏。',
+    cost: '0 额外费用'
+  },
+  {
+    id: 'dec-2',
+    num: '决策 02',
+    title: 'iMac 主控机管理员密码交付 (⚠️ P0 紧急阻塞)',
+    category: '硬件环境',
+    urgency: 'P0 紧急阻塞',
+    description: '现有主控 iMac (`topscholar operation`) 缺失管理员密码，导致本地无法安装 Docker/Node。',
+    actionRequirement: '会议现场交付 Sudo 密码或安排现场重置权限，打通本地开发与备份主节点。',
+    cost: '0 额外费用'
+  },
+  {
+    id: 'dec-3',
+    num: '决策 03',
+    title: 'Codecanyon LMS 三大核心包采购批准',
+    category: '平台采购',
+    urgency: 'P1 核心决策',
+    description: '采购 Rocket LMS Core + Plugins Bundle (40+ 插件) + Flutter Mobile App (iOS/Android)。',
+    actionRequirement: '官方判定：自营课程购买 Regular License 100% 合规，一次性买断，节省数百美元。',
+    cost: '一次性采购买断 (无月费)'
+  },
+  {
+    id: 'dec-4',
+    num: '决策 04',
+    title: '部署路线确认 (Phase 1 本地+Tailscale)',
+    category: '运维策略',
+    urgency: 'P2 推进共识',
+    description: '前期开发阶段采用「本地开发机 + Tailscale 虚拟组网」，避免云端 VPS 闲置成本。',
+    actionRequirement: '待系统二次开发与测试完成、正式对外部学员开放时，再平滑迁移至云端 VPS。',
+    cost: '前期 0 元云成本'
+  },
+  {
+    id: 'dec-5',
+    num: '决策 05',
+    title: 'AI 订阅矩阵开通与企业共用账号创建',
+    category: 'AI 工具链',
+    urgency: 'P1 核心决策',
+    description: '创建统一服务邮箱（如 ai-admin@...），开通 Claude Pro + Agnes + DeepSeek 预充值。',
+    actionRequirement: '建立统一账密，启动 Hermes Telegram 机器人及部门专属场景试点。',
+    cost: '月度固定仅约 $24 /月'
+  }
+];

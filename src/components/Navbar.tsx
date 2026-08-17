@@ -8,33 +8,33 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ viewMode, setViewMode }) => {
   return (
-    <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-gray-800 px-4 py-3">
+    <header className="sticky top-0 z-50 bg-[#07090e]/90 backdrop-blur-2xl border-b border-amber-500/20 px-4 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand Logo */}
         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setViewMode('slides')}>
-          <div className="p-2 bg-gradient-to-tr from-blue-600 via-purple-600 to-pink-600 rounded-xl text-white shadow-lg shadow-blue-500/20">
-            <Sparkles className="w-5 h-5" />
+          <div className="p-2.5 bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-300 rounded-2xl text-black shadow-[0_0_20px_rgba(245,158,11,0.4)]">
+            <Sparkles className="w-5 h-5 font-extrabold" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="font-black text-white text-base tracking-tight">TOP SCHOLAR</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 font-semibold">
-                ENTERPRISE OS
+              <span className="font-black text-white text-base tracking-wider font-mono">TOP SCHOLAR</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold uppercase tracking-wider">
+                ENTERPRISE AI OS
               </span>
             </div>
-            <p className="text-[11px] text-gray-400">企业数字大脑与全员 AI 岗位分身</p>
+            <p className="text-[11px] text-gray-400">企业数字大脑与各部门专属业务哨兵 · 2026-08-18 行动方案</p>
           </div>
         </div>
 
         {/* View Mode Switcher */}
         <div className="flex items-center space-x-3">
-          <div className="flex space-x-1 bg-gray-900 p-1 rounded-xl border border-gray-800">
+          <div className="flex space-x-1 bg-[#0e121b] p-1 rounded-2xl border border-amber-500/20 shadow-inner">
             <button
               onClick={() => setViewMode('slides')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
                 viewMode === 'slides'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'text-gray-400 hover:text-gray-200'
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
+                  : 'text-gray-400 hover:text-amber-300'
               }`}
             >
               <Presentation className="w-4 h-4" />
@@ -42,23 +42,24 @@ export const Navbar: React.FC<NavbarProps> = ({ viewMode, setViewMode }) => {
             </button>
             <button
               onClick={() => setViewMode('doc')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
                 viewMode === 'doc'
-                  ? 'bg-purple-600 text-white shadow-md shadow-purple-500/20'
-                  : 'text-gray-400 hover:text-gray-200'
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
+                  : 'text-gray-400 hover:text-amber-300'
               }`}
             >
               <BookOpen className="w-4 h-4" />
-              <span>策略全景文档</span>
+              <span>行动方案全景报告</span>
             </button>
           </div>
 
-          <div className="hidden md:flex items-center space-x-1 text-xs text-emerald-400 px-3 py-1.5 bg-emerald-950/40 rounded-xl border border-emerald-500/30">
-            <ShieldCheck className="w-4 h-4" />
-            <span>数据主权受保护</span>
+          <div className="hidden md:flex items-center space-x-1 text-xs text-amber-300 px-3 py-1.5 bg-amber-950/30 rounded-2xl border border-amber-500/30 font-mono">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span>内部最高决策材料</span>
           </div>
         </div>
       </div>
     </header>
   );
 };
+
