@@ -24,7 +24,7 @@ export const DocView: React.FC<DocViewProps> = ({ onSwitchToSlides }) => {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1">
-            TOP SCHOLAR — AI Enterprise OS 落地与基础设施搭建行动方案
+            TOP SCHOLAR — AI Enterprise OS 落地与基础设施搭建行动方案（2026-08-18）
           </h1>
           <p className="text-xs text-gray-400 mt-1">
             汇报人：Elson ｜ 供 2026-08-18 核心决策共创会审议

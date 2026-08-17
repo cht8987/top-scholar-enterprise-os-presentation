@@ -7,7 +7,7 @@ export interface SlideMeta {
 }
 
 export const SLIDES_META: SlideMeta[] = [
-  { id: 1, title: 'AI Enterprise OS 落地与基础设施行动方案', subtitle: 'Top Scholar 教育集团 · 2026-08-18 核心决策共创会', category: 'EXECUTIVE', badge: '8/18 决策案' },
+  { id: 1, title: 'AI Enterprise OS 落地与基础设施行动方案 (2026-08-18)', subtitle: 'Top Scholar 教育集团 · 2026-08-18 核心决策共创会', category: 'EXECUTIVE', badge: '8/18 决策案' },
   { id: 2, title: '双向闭环架构：以人为主的知识底座', subtitle: '为什么以 Obsidian 为真理源头，而非直接写入图数据库', category: 'ARCHITECTURE', badge: '双向闭环' },
   { id: 3, title: 'TS-KNOWLEDGE 7 大业务分区与协同共创', subtitle: '统一知识框架 · 部门专属负责人 · 8/20-8/30 结构化迁移', category: 'ORGANIZATION', badge: '7大分区' },
   { id: 4, title: '设备配置、网络方案与 P0 紧急阻塞', subtitle: 'iMac 管理员权限破局 · 本地开发+Tailscale vs 云端 VPS 选型', category: 'INFRASTRUCTURE', badge: 'P0 阻塞项' },

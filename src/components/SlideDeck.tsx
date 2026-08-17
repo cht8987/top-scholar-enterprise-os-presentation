@@ -182,6 +182,7 @@ export const SlideDeck: React.FC<SlideDeckProps> = ({
                   <span className="gradient-text-gold">TOP SCHOLAR</span>
                   <br />
                   <span className="text-white">AI Enterprise OS 落地与基础设施行动方案</span>
+                  <span className="text-amber-400 font-mono text-xl sm:text-3xl block mt-2">（2026-08-18）</span>
                 </h1>
 
                 <p className="text-base sm:text-xl text-gray-300 leading-relaxed font-light mb-8 max-w-3xl">
