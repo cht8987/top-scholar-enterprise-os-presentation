@@ -1227,6 +1227,28 @@ export const SlideDeck: React.FC<SlideDeckProps> = ({
               </div>
             </div>
           )}
+
+          {/* Highlighted Execution Timeline Milestone Box on every slide */}
+          <div className="mt-6 p-4 rounded-2xl bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-black/60 border-2 border-amber-400/60 shadow-[0_0_25px_rgba(245,158,11,0.18)] flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center space-x-3">
+              <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">
+                <Clock className="w-5 h-5 animate-pulse text-amber-400" />
+              </div>
+              <div>
+                <span className="text-[10px] uppercase tracking-widest font-mono text-amber-400 font-bold block">
+                  ⏱️ 达成所需时间与关键推进目标 (EXECUTION TIMELINE & TARGET)
+                </span>
+                <p className="text-xs sm:text-sm font-bold text-white mt-0.5">
+                  {currentMeta.timelineGoal}
+                </p>
+              </div>
+            </div>
+            <div className="text-right shrink-0">
+              <span className="px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/60 text-amber-300 font-mono text-xs font-bold shadow-[0_0_12px_rgba(245,158,11,0.3)]">
+                {currentMeta.timelineTag}
+              </span>
+            </div>
+          </div>
         </motion.div>
       </AnimatePresence>
 

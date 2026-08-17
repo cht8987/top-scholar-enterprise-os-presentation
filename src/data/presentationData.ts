@@ -4,18 +4,92 @@ export interface SlideMeta {
   subtitle: string;
   category: string;
   badge?: string;
+  timelineTag: string;
+  timelineGoal: string;
 }
 
 export const SLIDES_META: SlideMeta[] = [
-  { id: 1, title: 'AI Enterprise OS 落地与基础设施行动方案 (2026-08-18)', subtitle: 'Top Scholar 教育集团 · 2026-08-18 核心决策共创会', category: 'EXECUTIVE', badge: '8/18 决策案' },
-  { id: 2, title: '双向闭环架构：以人为主的知识底座', subtitle: '为什么以 Obsidian 为真理源头，而非直接写入图数据库', category: 'ARCHITECTURE', badge: '双向闭环' },
-  { id: 3, title: 'TS-KNOWLEDGE 7 大业务分区与协同共创', subtitle: '统一知识框架 · 部门专属负责人 · 8/20-8/30 结构化迁移', category: 'ORGANIZATION', badge: '7大分区' },
-  { id: 4, title: '设备配置、网络方案与 P0 紧急阻塞', subtitle: 'iMac 管理员权限破局 · 本地开发+Tailscale vs 云端 VPS 选型', category: 'INFRASTRUCTURE', badge: 'P0 阻塞项' },
-  { id: 5, title: 'Rocket LMS 深度采购与 5 大权限角色体系', subtitle: '三大核心包功能拆解 · 5 大角色分权 · Regular 授权合法性判定', category: 'LMS PLATFORM', badge: '采购与授权' },
-  { id: 6, title: 'AI 订阅矩阵与 2026 最新前沿 API 资费', subtitle: '月度固定仅 $24 · DeepSeek V4 / Claude Opus 5 / Gemini 3.7 Flash 官方资费', category: 'AI STACK', badge: '极致性价比' },
-  { id: 7, title: 'Hermes Agent 部门杀手级业务赋能', subtitle: '从被动问答升级为主动业务哨兵 · 营销短视频/广告分析 · 客服学情与关怀', category: 'HERMES AGENT', badge: '主动哨兵' },
-  { id: 8, title: '企业大脑演进节奏与 1 周落地 Playbook', subtitle: '1 个月技术底座迭代 · 1 周 Telegram Bot 极简上线与实战培训', category: 'ROADMAP', badge: '1周落地' },
-  { id: 9, title: '会议现场核心决策与行动审批清单', subtitle: '5 大决策现场审议 · 达成共识即刻启动开工', category: 'DECISION', badge: '现场拍板' }
+  {
+    id: 1,
+    title: 'AI Enterprise OS 落地与基础设施行动方案 (2026-08-18)',
+    subtitle: 'Top Scholar 教育集团 · 2026-08-18 核心决策共创会',
+    category: 'EXECUTIVE',
+    badge: '8/18 决策案',
+    timelineTag: '1周上线 · 1月成型',
+    timelineGoal: '8/18 共创会现场决议 ➔ 1 周内完成首批 2 位 Leader 专属 Agent 上线 ➔ 1 个月内完成企业大脑三阶段底座固化'
+  },
+  {
+    id: 2,
+    title: '双向闭环架构：以人为主的知识底座',
+    subtitle: '为什么以 Obsidian 为真理源头，而非直接写入图数据库',
+    category: 'ARCHITECTURE',
+    badge: '双向闭环',
+    timelineTag: '2 周内 (W1–W2)',
+    timelineGoal: '搭建并跑通「Obsidian Git Hook ➔ Graphiti 时序增量抽取 ➔ FalkorDB GraphRAG 混合检索」全自动化验证链路'
+  },
+  {
+    id: 3,
+    title: 'TS-KNOWLEDGE 7 大业务分区与协同共创',
+    subtitle: '统一知识框架 · 部门专属负责人 · 8/20-8/30 结构化迁移',
+    category: 'ORGANIZATION',
+    badge: '7大分区',
+    timelineTag: '8/20 – 8/30 (10天)',
+    timelineGoal: '1–2 天起草基础规范与模板 ➔ 8/20–8/30 与各板块负责人（Ying Lin、Becky、Kyle&JJ等）集中完成历史 SOP 结构化迁移'
+  },
+  {
+    id: 4,
+    title: '设备配置、网络方案与 P0 紧急阻塞',
+    subtitle: 'iMac 管理员权限破局 · 本地开发+Tailscale vs 云端 VPS 选型',
+    category: 'INFRASTRUCTURE',
+    badge: 'P0 阻塞项',
+    timelineTag: '8/18 现场 15 分钟',
+    timelineGoal: '8/18 会议现场 15 分钟内交付/重置 iMac 管理员密码 ➔ 当天打通 Tailscale 虚拟专网与本地 Docker 容器环境'
+  },
+  {
+    id: 5,
+    title: 'Rocket LMS 深度采购与 5 大权限角色体系',
+    subtitle: '三大核心包功能拆解 · 5 大角色分权 · Regular 授权合法性判定',
+    category: 'LMS PLATFORM',
+    badge: '采购与授权',
+    timelineTag: '3–5 天部署交付',
+    timelineGoal: '8/18 审批通过后当天采购 Codecanyon 三大包 ➔ 3–5 天内完成本地环境部署、中文汉化配置与 40+ 插件全量激活'
+  },
+  {
+    id: 6,
+    title: 'AI 订阅矩阵与 2026 最新前沿 API 资费',
+    subtitle: '月度固定仅 $24 · DeepSeek V4 / Claude Opus 5 / Gemini 3.7 Flash 官方资费',
+    category: 'AI STACK',
+    badge: '极致性价比',
+    timelineTag: '8/18 当天 1 小时',
+    timelineGoal: '创建企业共用服务邮箱，1 小时内开通 Claude Pro / Agnes / DeepSeek API 预充值并完成联调测试'
+  },
+  {
+    id: 7,
+    title: 'Hermes Agent 部门杀手级业务赋能',
+    subtitle: '从被动问答升级为主动业务哨兵 · 营销短视频/广告分析 · 客服学情与关怀',
+    category: 'HERMES AGENT',
+    badge: '主动哨兵',
+    timelineTag: '3–4 天跑通闭环',
+    timelineGoal: 'Day 1–2 配置 Telegram Bot ➔ Day 3–4 (各 30min) 手把手协助 Ying Lin / Becky 跑通 3 组真实高价值业务场景'
+  },
+  {
+    id: 8,
+    title: '企业大脑演进节奏与 1 周落地 Playbook',
+    subtitle: '1 个月技术底座迭代 · 1 周 Telegram Bot 极简上线与实战培训',
+    category: 'ROADMAP',
+    badge: '1周落地',
+    timelineTag: 'Day 1–5 极简落地',
+    timelineGoal: '5 天内发放一页纸卡片并让 Leader 常态化使用 ➔ 4 周内完成 Phase A (底座)、Phase B (记忆)、Phase C (迁移)'
+  },
+  {
+    id: 9,
+    title: '会议现场核心决策与行动审批清单',
+    subtitle: '5 大决策现场审议 · 达成共识即刻启动开工',
+    category: 'DECISION',
+    badge: '现场拍板',
+    timelineTag: '8/18 现场 30–45 分钟',
+    timelineGoal: '8/18 会议现场 30–45 分钟完成 5 项关键决策逐项审议并勾选拍板 ➔ 即刻启动正式开工！'
+  }
 ];
 
 export interface DepartmentItem {

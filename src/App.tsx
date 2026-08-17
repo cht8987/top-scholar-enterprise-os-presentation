@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { SlideDeck } from './components/SlideDeck';
 import { DocView } from './components/DocView';
+import { SLIDES_META } from './data/presentationData';
 
 export function App() {
   const [viewMode, setViewMode] = useState<'slides' | 'doc'>('slides');
   const [currentSlide, setCurrentSlide] = useState<number>(1);
-  const TOTAL_SLIDES = 10;
+  const TOTAL_SLIDES = SLIDES_META.length;
 
   return (
     <div className="min-h-screen bg-[#0b0f19] text-gray-100 flex flex-col justify-between selection:bg-blue-500 selection:text-white">
