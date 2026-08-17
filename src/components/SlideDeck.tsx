@@ -347,6 +347,24 @@ export const SlideDeck: React.FC<SlideDeckProps> = ({
                       </div>
                     </div>
                   </div>
+
+                  {/* Arrow 4 */}
+                  <div className="flex items-center justify-center">
+                    <span className="text-[10px] font-mono px-3 py-1 rounded-full bg-black/80 border border-amber-500/40 text-amber-300">
+                      ↓ 采纳反馈与偏好沉淀（闭环回流）
+                    </span>
+                  </div>
+
+                  {/* Node 5: Hindsight */}
+                  <div className="p-3.5 rounded-2xl bg-amber-950/30 border border-amber-500/40 text-center relative shadow-[0_0_15px_rgba(245,158,11,0.15)]">
+                    <div className="text-xs font-bold text-amber-300 flex items-center justify-center space-x-1.5">
+                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      <span>Hindsight：长期进化记忆与经验沉淀</span>
+                    </div>
+                    <p className="text-xs text-gray-300 mt-1">
+                      记录各岗位高频提问、有效采纳策略与 SOP 修正，实现企业大脑持续自我进化 🧠
+                    </p>
+                  </div>
                 </div>
 
                 {/* Right Panel: Why Markdown/Obsidian */}
