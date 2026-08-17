@@ -248,80 +248,103 @@ export const SlideDeck: React.FC<SlideDeckProps> = ({
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-                {/* Visual Closed Loop Cards */}
-                <div className="lg:col-span-8 space-y-4">
-                  {/* Step 1: Obsidian Vault */}
-                  <div className="glass-panel-gold p-5 rounded-2xl border-l-4 border-l-amber-400 relative">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                          <BookOpen className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <div className="text-xs font-mono text-amber-400 font-bold">LAYER 1 · 核心真理源头 (Single Source of Truth)</div>
-                          <h3 className="text-base font-bold text-white">Obsidian Vault: TS-KNOWLEDGE</h3>
-                        </div>
+                {/* Visual Closed Loop Topological Graph matching Obsidian Graph */}
+                <div className="lg:col-span-8 glass-panel-gold p-6 rounded-3xl border border-amber-500/30 space-y-3 relative overflow-hidden">
+                  <div className="scan-line"></div>
+                  
+                  {/* Top Dual Nodes: Human & AI */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Human Node */}
+                    <div className="p-3.5 rounded-2xl bg-black/60 border border-amber-500/30 text-center relative group hover:border-amber-400 transition-all">
+                      <div className="text-xs font-bold text-amber-300 flex items-center justify-center space-x-1.5">
+                        <Users className="w-4 h-4 text-amber-400" />
+                        <span>各部门业务负责人（人）</span>
                       </div>
-                      <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 font-mono">人可编辑 · Git版本化</span>
+                      <div className="mt-2 text-[11px] px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-200 border border-amber-500/20 inline-block font-mono">
+                        日常编辑与修订 SOP ↓
+                      </div>
                     </div>
-                    <p className="text-xs text-gray-300 mt-2.5 leading-relaxed">
-                      Markdown + Frontmatter 结构化数据 + 双向链接。按 00~06 部门文件夹严格隔离权限。业务人员直接在日常维护 SOP，所有修改均产生 Git Commit，变更清晰可审计。
+
+                    {/* AI Agent Node */}
+                    <div className="p-3.5 rounded-2xl bg-black/60 border border-cyan-500/30 text-center relative group hover:border-cyan-400 transition-all">
+                      <div className="text-xs font-bold text-cyan-300 flex items-center justify-center space-x-1.5">
+                        <Bot className="w-4 h-4 text-cyan-400" />
+                        <span>业务专属 Agent（AI）</span>
+                      </div>
+                      <div className="mt-2 text-[11px] px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-200 border border-cyan-500/20 inline-block font-mono">
+                        写入草稿与分析提案 ↓
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Central Node: Obsidian Vault */}
+                  <div className="p-4 rounded-2xl bg-amber-500/10 border-2 border-amber-400/60 shadow-[0_0_20px_rgba(245,158,11,0.15)] text-center relative">
+                    <div className="text-xs font-mono text-amber-400 font-bold uppercase tracking-wider">
+                      知识源头 (Single Source of Truth)
+                    </div>
+                    <h3 className="text-base font-extrabold text-white mt-0.5">
+                      Obsidian Vault (TS-KNOWLEDGE)
+                    </h3>
+                    <p className="text-xs text-amber-200/90 mt-1 font-mono">
+                      Markdown · Frontmatter 属性 · 双向链接 · Git 版本化审计
                     </p>
                   </div>
 
-                  {/* Flow Trigger */}
-                  <div className="flex items-center justify-center text-amber-400 text-xs font-mono py-0.5">
-                    <span className="px-3 py-1 rounded-full bg-slate-900 border border-amber-500/30">▼ 变更触发：n8n Watch / Git Commit Hook</span>
+                  {/* Arrow 1 */}
+                  <div className="flex items-center justify-center">
+                    <span className="text-[10px] font-mono px-3 py-1 rounded-full bg-black/80 border border-amber-500/40 text-amber-300">
+                      ↓ 变更触发 n8n / Git Hook
+                    </span>
                   </div>
 
-                  {/* Step 2: Graphiti & FalkorDB */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="glass-card-gold p-4 rounded-2xl border-l-4 border-l-cyan-400">
-                      <div className="flex items-center space-x-2 text-cyan-300 mb-2">
-                        <Cpu className="w-4 h-4" />
-                        <span className="text-xs font-bold font-mono">Graphiti · 时序图谱抽取</span>
-                      </div>
-                      <p className="text-xs text-gray-300 leading-relaxed">
-                        实体抽取 · 关系网络构建 · 时间戳多版本留痕 · 增量自动入图。
-                      </p>
+                  {/* Node 2: Graphiti */}
+                  <div className="p-3.5 rounded-2xl bg-black/50 border border-cyan-500/40 text-center">
+                    <div className="text-xs font-bold text-cyan-300 flex items-center justify-center space-x-1.5">
+                      <Cpu className="w-4 h-4 text-cyan-400" />
+                      <span>Graphiti：时序知识图谱构建</span>
                     </div>
-
-                    <div className="glass-card-gold p-4 rounded-2xl border-l-4 border-l-indigo-400">
-                      <div className="flex items-center space-x-2 text-indigo-300 mb-2">
-                        <Database className="w-4 h-4" />
-                        <span className="text-xs font-bold font-mono">FalkorDB · GraphRAG 混合检索</span>
-                      </div>
-                      <p className="text-xs text-gray-300 leading-relaxed">
-                        精准知识拓扑关系检索 + 高维语义向量混合检索，彻底杜绝大模型幻觉。
-                      </p>
-                    </div>
+                    <p className="text-xs text-gray-300 mt-1">
+                      实体抽取 · 关系网络构建 · 时间戳版本留痕 · 增量自动入图
+                    </p>
                   </div>
 
-                  {/* Flow Trigger 2 */}
-                  <div className="flex items-center justify-center text-amber-400 text-xs font-mono py-0.5">
-                    <span className="px-3 py-1 rounded-full bg-slate-900 border border-amber-500/30">▼ GraphRAG 知识注入 / 决策采纳反馈</span>
+                  {/* Arrow 2 */}
+                  <div className="flex items-center justify-center">
+                    <span className="text-[10px] font-mono px-3 py-1 rounded-full bg-black/80 border border-cyan-500/40 text-cyan-300">
+                      ↓ 增量写入与更新
+                    </span>
                   </div>
 
-                  {/* Step 3: Agents & Hindsight */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="glass-card-gold p-4 rounded-2xl border-l-4 border-l-emerald-400">
-                      <div className="flex items-center space-x-2 text-emerald-300 mb-2">
-                        <Bot className="w-4 h-4" />
-                        <span className="text-xs font-bold font-mono">LangGraph Agent 协同层</span>
-                      </div>
-                      <p className="text-xs text-gray-300 leading-relaxed">
-                        营销 (Ying Lin) / 销售&客服 (Becky) / 教务 / 运营IT 专属业务哨兵。
-                      </p>
+                  {/* Node 3: FalkorDB */}
+                  <div className="p-3.5 rounded-2xl bg-black/50 border border-indigo-500/40 text-center">
+                    <div className="text-xs font-bold text-indigo-300 flex items-center justify-center space-x-1.5">
+                      <Database className="w-4 h-4 text-indigo-400" />
+                      <span>FalkorDB：GraphRAG 混合检索</span>
                     </div>
+                    <p className="text-xs text-gray-300 mt-1">
+                      精准知识拓扑关系 + 高维语义向量检索（彻底杜绝大模型幻觉）
+                    </p>
+                  </div>
 
-                    <div className="glass-card-gold p-4 rounded-2xl border-l-4 border-l-amber-400">
-                      <div className="flex items-center space-x-2 text-amber-300 mb-2">
-                        <Sparkles className="w-4 h-4" />
-                        <span className="text-xs font-bold font-mono">Hindsight · 长期进化记忆</span>
+                  {/* Arrow 3 */}
+                  <div className="flex items-center justify-center">
+                    <span className="text-[10px] font-mono px-3 py-1 rounded-full bg-black/80 border border-indigo-500/40 text-indigo-300">
+                      ↓ GraphRAG 知识检索注入
+                    </span>
+                  </div>
+
+                  {/* Node 4: LangGraph Agent Layer Container */}
+                  <div className="p-4 rounded-2xl bg-emerald-950/20 border-2 border-emerald-500/40 space-y-2">
+                    <div className="text-xs font-bold text-emerald-400 text-center uppercase tracking-wider">
+                      LangChain / LangGraph Agent 协同层
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="p-2.5 rounded-xl bg-black/60 border border-emerald-500/30 text-center text-xs font-bold text-white">
+                        🎯 营销 Agent (Ying Lin)
                       </div>
-                      <p className="text-xs text-gray-300 leading-relaxed">
-                        记录高频提问、有效采纳策略、SOP 偏差修正，越用越懂业务。
-                      </p>
+                      <div className="p-2.5 rounded-xl bg-black/60 border border-emerald-500/30 text-center text-xs font-bold text-white">
+                        🎯 销售与客服 Agent (Becky)
+                      </div>
                     </div>
                   </div>
                 </div>
